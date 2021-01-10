@@ -65,7 +65,7 @@ Thursday, January 21st<br/>10-1pm BST ([check your time zone](https://www.worldt
 </aside>
 
 ```{r embed-xaringan-01, echo=FALSE}
-xaringanExtra::embed_xaringan(url = "https://spcanelon.github.io/xaringan-basics-and-beyond/slides/day-01-basics.html", ratio = "16:9")
+xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/day-01-basics.html#1", ratio = "16:9")
 ```
 
 - **The Afternoon** will cover colours, themes, facets, and fonts.
@@ -111,6 +111,6 @@ devtools::install_github("nhs-r-community/NHSRdatasets")
 
 # Acknowledgments {.appendix}
 
-This workshop draws from various sources, most notably the books by [Kieran Healy](https://socviz.co/) and [Claus Wilkie](https://clauswilke.com/dataviz/). This workshop ran smoothly with the help of [Sharon Townsend](https://www.strategyunitwm.nhs.uk/author/sharon-townsend) as co-pilot.
+This workshop draws from various sources, most notably the books by [Kieran Healy](https://socviz.co/) and [Claus Wilkie](https://clauswilke.com/dataviz/). I'd also like to mention the webpage of [The Top 50 ggplot2 Visualisations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html). This workshop ran smoothly with the help of [Sharon Townsend](https://www.strategyunitwm.nhs.uk/author/sharon-townsend) as co-pilot.
 
 This website was made with the [distill package](https://rstudio.github.io/distill/) and a custom theme designed by Silvia Canelón.

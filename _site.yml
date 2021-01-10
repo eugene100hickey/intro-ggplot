@@ -12,14 +12,14 @@ navbar:
       menu:
         - text: "Morning 10:00-13:00: The Basics"
           href: "slides/day-01-basics.html"
-        - text: "Day 2: The Beyond"
+        - text: "Afternoon 13:30-16:00 Extras"
           href: "slides/day-02-beyond.html"
     - icon: fab fa-youtube
       href: "https://www.youtube.com/channel/UCMwM-3tg_-Pbx8hKO78q5EA"
-    - icon: fas fa-cloud
-      href: "https://bit.ly/3mfJM4k"
+    - icon: fab fa-twitter
+      href: "https://twitter.com/eugene100hickey"
     - icon: fab fa-github
-      href: https://github.com/eugene100hickey
+      href: "https://github.com/eugene100hickey"
 creative_commons: CC BY-SA
 repository_url: https://github.com/eugene100hickey
 output:

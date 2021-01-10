@@ -164,8 +164,6 @@ class: top
 
 ---
 
----
-
 # Target Audience
 
 - people with some experience of R, but haven't made the plunge to ggplot. __Just yet__. 
@@ -303,7 +301,10 @@ fviz_cluster_example + theme_classic()
 
 - ggplot is easy to make publication-ready  
 
-- easier to make sequence of visualisations
+- easier to make sequence of visualisations  
+
+- fits in nicely with the rest of the tidyverse
+
 
 
 
