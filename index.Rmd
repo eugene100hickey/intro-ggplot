@@ -84,43 +84,33 @@ This workshop is designed for people with previous experience of R but have yet 
 
 ## Essential
 
-- The workshop will take place within an RStudio Cloud project, please sign up for a free RStudio Cloud account here: https://rstudio.cloud.
-- We will be utilizing Zoom for this workshop, please download and install [the latest version beforehand](https://zoom.us/download).
-
-## Optional
-
-We will use the software listed below only as an important backup in the event we experience technical difficulties with RStudio Cloud.
+We'll be using the software listed below.
 
 - Install [R](https://cloud.r-project.org/) and [RStudio Desktop](https://rstudio.com/products/rstudio/download/) on your computer. 
 
 You can find step-by-step instructions for installing these here: [macOS](https://www.youtube.com/watch?v=GM88tYlEy_g), [Windows](https://www.youtube.com/watch?v=JRKmZK5-6aE).
 
-<aside>
-Thanks to<br/>Stephan Kadauke
-</aside>
 
 - Install the following packages:
 
 ```{r, eval=FALSE, echo=TRUE}
 # From CRAN
-install.packages("xaringan")
+list_of_packages <- c("tidyverse")
+
+# run the following line of code to install the packages you currently do not have
+new_pkgs <- list_of_pkgs[!(list_of_pkgs %in% installed.packages()[,"Package"])]
+if(length(new_pkgs)) install.packages(new_pkgs)
 
 # From GitHub
-devtools::install_github("nhs-r-community/nhsrtheme")
 devtools::install_github("nhs-r-community/NHSRdatasets")
-devtools::install_github("gadenbuie/xaringanExtra")
-devtools::install_github("ropenscilabs/icon")
 ```
 
 # Links
 
-- Link to this website: [bit.ly/xaringan-nhsr](https://bit.ly/xaringan-nhsr)
-- [RStudio Cloud workspace](https://bit.ly/3mfJM4k) and companion [source materials](https://github.com/spcanelon/xaringan-basics-and-beyond/tree/main/materials)
-- Day 1: The Basics: [Slides](slides/day-01-basics.html) | [Video](https://youtu.be/M3skTMQbCD0)
-- Day 2: The Beyond: [Slides](slides/day-02-beyond.html) | [Video](https://youtu.be/cAtpZxW4bTI)
+- Link to this website:
 
 # Acknowledgments {.appendix}
 
-This workshop draws from various sources, most notably Alison Hill’s [Making Slides with R Markdown](https://arm.rbind.io/slides/xaringan.html) and Greg Wilson's [Teaching Tech Together](http://teachtogether.tech/en/). This workshop ran smoothly with the help of [Laurie Baker](https://lauriebaker.rbind.io/) as co-pilot.
+This workshop draws from various sources, most notably the books by [Kieran Healy](https://socviz.co/) and [Claus Wilkie](https://clauswilke.com/dataviz/). This workshop ran smoothly with the help of [Sharon Townsend](https://www.strategyunitwm.nhs.uk/author/sharon-townsend) as co-pilot.
 
 This website was made with the [distill package](https://rstudio.github.io/distill/) and a custom theme designed by Silvia Canelón.
