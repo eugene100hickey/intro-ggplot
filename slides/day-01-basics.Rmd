@@ -1,6 +1,6 @@
 ---
 title: "NHS Workshop<br>Introduction to ggplot"
-subtitle: "Why ggplot"
+subtitle: "Starting ggplot"
 session: "10:00-11:00"
 author: "Eugene Hickey"
 institute: "Technological University Dublin"
@@ -76,88 +76,93 @@ xaringanExtra::style_share_again(
   share_buttons = c("twitter", "linkedin", "pocket")
 )
 
-# uncomment the following lines if you want to use the NHS-R theme colours by default
-# scale_fill_continuous <- partial(scale_fill_nhs, discrete = FALSE)
-# scale_fill_discrete <- partial(scale_fill_nhs, discrete = TRUE)
-# scale_colour_continuous <- partial(scale_colour_nhs, discrete = FALSE)
-# scale_colour_discrete <- partial(scale_colour_nhs, discrete = TRUE)
 ```
 
 
-<!-- class: title-slide, right, top -->
-<!-- background-image: url(img/front-page.png) -->
-<!-- background-position: 90% 75%, 75% 75% -->
-<!-- background-size:cover -->
+class: title-slide, right, top
+background-image: url(img/moon.JPG)
+background-position: 90% 75%, 75% 75%
+background-size:cover
+
+.left-column[
+# `r rmarkdown::metadata$title`
+] 
+
+.right-column[
+### `r rmarkdown::metadata$subtitle`
+
+**`r rmarkdown::metadata$author`**<br>
+`r rmarkdown::metadata$date`
+]
 
 
-<!-- .palegrey[.left[.footnote[Graphic by [Elaine Hickey](https://photos.google.com/photo/AF1QipMjKNoaxyne8nte4HmxA6Th9-4fUfSbl_mx-_1G)]]] -->
+.palegrey[.left[.footnote[Graphic by [Elaine Hickey](https://photos.google.com/photo/AF1QipMjKNoaxyne8nte4HmxA6Th9-4fUfSbl_mx-_1G)]]]
 
-<!-- ??? -->
+???
 
-<!-- Welcome to the workshop on ggplot. -->
+Welcome to the workshop on ggplot.
 
-<!-- Where we'll show you how to create impressive data visualisations. -->
+Where we'll show you how to create impressive data visualisations.
 
-<!-- --- -->
-<!-- name: about-me -->
-<!-- layout: false -->
-<!-- class: about-me-slide, inverse, middle, center -->
+---
+name: about-me
+layout: false
+class: about-me-slide, inverse, middle, center
 
-<!-- # About me -->
+# About me
 
-<!-- <img style="border-radius: 50%;" src="img/eugene.jpg" width="150px"/> -->
+<img style="border-radius: 50%;" src="img/eugene.jpg" width="150px"/>
 
-<!-- ## Eugene Hickey -->
+## Eugene Hickey
 
-<!-- ### lecturer in physics -->
+### lecturer in physics
 
-<!-- .fade[Technological University<br>Dublin] -->
+.fade[Technological University<br>Dublin]
 
-<!-- [`r icon::fa("link")` bioscience.netlify.app](https://bioscience.netlify.app) -->
-<!-- [`r icon::fa("twitter")` @eugene100hickey](https://twitter.com/eugene100hickey) -->
-<!-- [`r icon::fa("github", size = 1)` eugene100hickey](https://github.com/eugene100hickey) -->
+[`r icon::fa("link")` bioscience.netlify.app](https://bioscience.netlify.app)
+[`r icon::fa("twitter")` @eugene100hickey](https://twitter.com/eugene100hickey)
+[`r icon::fa("github", size = 1)` eugene100hickey](https://github.com/eugene100hickey)
 
-<!-- --- -->
-<!-- layout: true -->
+---
+layout: true
 
-<!-- <a class="footer-link" href="http://bit.ly/xaringan-nhsr">bit.ly/xaringan-nhsr &mdash; Silvia Canelón</a> -->
+<a class="footer-link" href="http://intro-ggplot-nhs.netlify.app">intro-ggplot-nhs &mdash; Eugene Hickey</a>
 
-<!-- <!-- this adds the link footer to all slides, depends on footer-link class in css--> -->
+<!-- this adds the link footer to all slides, depends on footer-link class in css-->
 
-<!-- --- -->
-<!-- class: top -->
+---
+class: top
 
-<!-- # Acknowledgments -->
+# Acknowledgments
 
-<!-- .pull-left-narrow[.center[<img style="border-radius: 50%;" src="https://lauriebaker.rbind.io/author/dr.-laurie-baker/avatar_hu30116ce9545207e6cc07ea892252ff02_106302_270x270_fill_q90_lanczos_center.jpg" width="100px"/>]] -->
+.pull-left-narrow[.center[<img style="border-radius: 50%;" src="https://www.strategyunitwm.nhs.uk/sites/default/files/styles/banner/public/Sharon_Townsend.jpg?itok=_S1ntVbo" width="100px"/>]]
 
-<!-- .pull-right-wide[ -->
-<!-- [Laurie Baker](https://lauriebaker.rbind.io), co-pilot for this workshop and Data Science Lecturer at the Data Science Campus, Office for National Statistics, UK.as -->
-<!-- ] -->
+.pull-right-wide[
+[Sharon Townsend](https://www.strategyunitwm.nhs.uk/author/sharon-townsend), co-pilot for this workshop and business manager at the NHS, Midlands and Lancashire Strategy Unit.
+]
 
-<!-- -- -->
+--
 
-<!-- .pull-left-narrow[.center[ -->
-<!-- <img style="border-radius: 50%;" src="https://avatars0.githubusercontent.com/u/53170984?s=200&v=4" width="125px"/>]] -->
+.pull-left-narrow[.center[
+<img style="border-radius: 50%;" src="https://avatars0.githubusercontent.com/u/53170984?s=200&v=4" width="125px"/>]]
 
-<!-- .pull-right-wide[ -->
-<!-- [NHS-R Community](https://nhsrcommunity.com/) for the opportunity to provide this workshop -->
-<!-- - [nhsrtheme `r emo::ji("package")`](https://github.com/nhs-r-community/nhsrtheme) developed by Tom Jemmett -->
-<!-- - [NHSRdatasets `r emo::ji("package")`](https://github.com/nhs-r-community/NHSRdatasets) developed by Chris Mainey -->
-<!-- ] -->
+.pull-right-wide[
+[NHS-R Community](https://nhsrcommunity.com/) for the opportunity to provide this workshop
+- [NHSRdatasets `r emo::ji("package")`](https://github.com/nhs-r-community/NHSRdatasets) developed by Chris Mainey and Tom Jemmett
+]
 
-<!-- -- -->
+--
 
-<!-- .pull-left-narrow[.center[ -->
-<!-- `r icon::fa("smile", size = 3, color = "#e5bf00")`]] -->
+.pull-left-narrow[.center[
+`r icon::fa("smile", size = 3, color = "#e5bf00")`]]
 
-<!-- .pull-right-wide[ -->
-<!-- - [xaringan `r emo::ji("package")`](https://github.com/yihui/xaringan#xaringan) developed by Yihui Xie -->
-<!-- - [xaringanExtra `r emo::ji("package")`](https://github.com/gadenbuie/xaringanExtra/#xaringanExtra) developed by Garrick Aden-Buie -->
-<!-- - Materials developed by [Alison Hill](https://twitter.com/apreshill) that have inspired and informed this workshop -->
-<!-- ] -->
+.pull-right-wide[
+- [xaringan `r emo::ji("package")`](https://github.com/yihui/xaringan#xaringan) developed by Yihui Xie
+- [flipbookr `r emo::ji("package")`](https://github.com/EvaMaeRey/flipbookr) developed by Gina Reynolds
+- [learnr `r emo::ji("package")`](https://github.com/rstudio/learnr) developed by Garrick Aden-Buie
+]
 
-<!-- --- -->
+---
 
 ---
 

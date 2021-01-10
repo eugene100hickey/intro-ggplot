@@ -196,10 +196,11 @@ pre code {
 .title-slide h1 {
   font-size:          2.4em;
   font-weight:        600;
-  color:              var(--my-blue);
+  color:              var(--White);
+  text-align:         justify;
 }
 .title-slide h3 {
-  color:              var(--my-yellow);
+  color:              var(--White);
   font-size:          1.1em;
   text-transform:     uppercase;
 }
