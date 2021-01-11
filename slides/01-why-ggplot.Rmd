@@ -1,6 +1,6 @@
 ---
 title: "NHS Workshop<br>Introduction to ggplot"
-subtitle: "Starting ggplot"
+subtitle: "Getting starting - why ggplot?"
 session: "10:00-11:00"
 author: "Eugene Hickey"
 institute: "Technological University Dublin"

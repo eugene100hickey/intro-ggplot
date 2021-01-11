@@ -1,6 +1,6 @@
 ---
 title: "NHS Workshop<br>Introduction to ggplot"
-subtitle: "Mechanics of ggplot"
+subtitle: "ggplot - Proportions"
 session: "11:00-12:00"
 author: "Eugene Hickey"
 institute: "Technological University Dublin"
