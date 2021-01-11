@@ -1,6 +1,6 @@
 ---
 title: "Introduction to ggplot"
-author: 
+author:
 - name: Eugene Hickey
   url: https://biosience.netlify.app
   affiliation: Technological University Dublin
@@ -65,7 +65,17 @@ Thursday, January 21st<br/>10-1pm BST ([check your time zone](https://www.worldt
 </aside>
 
 ```{r embed-xaringan-01, echo=FALSE}
-xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/day-01-basics.html#1", ratio = "16:9")
+xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/01-why-ggplot.html", ratio = "16:9")
+```
+
+
+```{r embed-xaringan-02, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/02-proportions.html", ratio = "16:9")
+```
+
+
+```{r embed-xaringan-03, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/03-distributions-relationships.html", ratio = "16:9")
 ```
 
 - **The Afternoon** will cover colours, themes, facets, and fonts.
@@ -73,10 +83,6 @@ xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides
 <aside>
 Thursday, January 21st<br/>1-4pm BST ([check your time zone](https://www.worldtimebuddy.com/?qm=1&lid=2964574,360630,524901&h=2964574&date=2021-1-21&sln=13-16&hf=1))
 </aside>
-
-```{r embed-xaringan-02, echo=FALSE}
-xaringanExtra::embed_xaringan(url = "https://spcanelon.github.io/xaringan-basics-and-beyond/slides/day-02-beyond.html", ratio = "16:9")
-```
 
 This workshop is designed for people with previous experience of R but have yet to take the plunge to working with ggplot.
 

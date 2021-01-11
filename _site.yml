@@ -10,12 +10,12 @@ navbar:
       href: "https://nhsrcommunity.com/"
     - text: "Slides"
       menu:
-        - text: "Morning 10:00-11:00: The Basics"
-          href: "slides/day-01-basics.html"
-        - text: "Morning 11:00-12:00: The Mechanics"
-          href: "slides/day-01-mechanics.html"
-        - text: "Afternoon 13:30-16:00 Extras"
-          href: "slides/day-02-beyond.html"
+        - text: "Morning 10:00-11:00: Getting Started"
+          href: "slides/01-why-ggplot.html"
+        - text: "Morning 11:00-12:00: ggplot - Proportions"
+          href: "slides/02-proportions.html"
+        - text: "Morning 12:00-13:00 ggplot - Distributions/Reltionships"
+          href: "slides/03-distributions-relationships.html"
     - icon: fab fa-youtube
       href: "https://www.youtube.com/channel/UCMwM-3tg_-Pbx8hKO78q5EA"
     - icon: fab fa-twitter
