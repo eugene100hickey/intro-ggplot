@@ -97,7 +97,7 @@ background-size:cover
 ]
 
 
-.palegrey[.left[.footnote[Graphic by [Elaine Hickey](https://photos.google.com/photo/AF1QipMjKNoaxyne8nte4HmxA6Th9-4fUfSbl_mx-_1G)]]]
+.palegrey[.left[.footnote[Graphic by [Elaine Hickey](https://photos.google.com/share/AF1QipPIxF5woVsr8ONkjyNG-xOw_zLzzR_f67LTjuqQsFUPsdLMNWAT56rYcqHrUZL1NA/photo/AF1QipPX2V396RdwaR8xZgCEPghKLe_AEjp6cmm4aIhH?key=TTl0UllSakRHNjZMd0YxWlp6cno5aWlocGN3RGJn)]]]
 
 ???
 

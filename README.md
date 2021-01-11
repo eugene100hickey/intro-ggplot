@@ -1,4 +1,4 @@
-![](https://repository-images.githubusercontent.com/304962818/38fb4600-20f5-11eb-9597-52659d721631)
-Workshop created for the [NHS-R Community 2020 Virtual Conference](https://nhsrcommunity.com/nhsr-conference-2020/)
+![](https://github.com/eugene100hickey/intro-ggplot/blob/master/slides/img/front-page.png)
+Workshop created for the [NHS-R Community](https://nhsrcommunity.com/)
 
-# Workshop site: [bit.ly/xaringan-nhsr](https://bit.ly/xaringan-nhsr)
+# Workshop site on github: [eugene100hickey/intro-ggplot](https://github.com/eugene100hickey/intro-ggplot)
