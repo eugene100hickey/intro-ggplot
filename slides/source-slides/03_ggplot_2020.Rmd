@@ -1,0 +1,317 @@
+---
+title: "ggplot - a Pantheon of Visualisations"
+author: "Eugene"
+date: "`r format(Sys.Date(), '%B %d %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [TUD01, TUD02, tamu-fonts]
+---
+
+class: center, inverse
+
+# Basic Picture of ggplot
+
+- aesthetics
+    - values that each individual observation (row) has
+    - will be different for each observation
+- atrributes
+    - values that are shared between all points
+    - decide to make everything mint green
+- layers
+    - each visualisation is built sequentially
+    - add features in layers, one on top of the last
+    - examples: add a plot title, change an axis scale....
+    
+---
+
+```{r ggplot_example, echo = F, message = F, warning = F, cache = T}
+library(tidyverse)
+library(ggtext)
+library(hrbrthemes)
+
+who %>% 
+  filter(iso3 == "IRL") %>% 
+  select(year, new_sp_f65, new_sp_m65) %>% 
+  drop_na() %>% 
+  pivot_longer(cols = -year, names_to = "Gender", values_to = "Incidence") %>% 
+  ggplot(aes(x = year, y = Incidence, col = Gender)) + 
+  geom_point() +
+  geom_smooth(se = F) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + 
+  labs(subtitle = "Incidence of Tuberculosis in Ireland",
+       title = "<span style = 'color: red;'>Women</span> and 
+       <span style = 'color: blue;'>Men</span>",
+       caption = "@Data from WHO") +
+  theme(plot.title = element_markdown()) +
+  theme(text = element_text(family = "Ink Free", size = 24),
+        axis.title = element_text(family = "Ink Free", size = 24, face = "bold"))
+```
+
+
+---
+
+
+# Picturing Data Different Ways with ggplot
+
+### We're going to set out some of the options for looking at data
+
+### these depend on what kind of data you have
+
+### and what you want to investigate
+
+Lots of these come from [Top 50 Visualizations in R](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#5.%20Composition)
+
+
+
+---
+
+<ol>
+<li> Visualising Amounts
+<li> Visualising Proportions
+<li><span style="color: red;"> Visualising Distributions </span>
+<li><span style="color: red;"> Visualising Relationships </span>
+<li><span style="color: red;"> Visualising Time Series </span>
+<li><span style="color: red;"> Visualising Groups </span>
+<li><span style="color: red;"> Visualising Networks </span>
+<li><span style="color: red;"> Visualising Spatial Data </span>
+
+Items in <span style="color: red;">red</span> we'll cover next week.
+
+---
+
+class: center, inverse
+
+# Visualising Amounts
+
+- barplot
+- dot plot
+- lollipop plot
+
+
+
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F, cache = F)
+```
+
+```{r libraries, cache = F}
+library(tidyverse)
+library(scales)
+library(gapminder)
+library(ggrepel)
+library(glue)
+library(waffle)
+library(treemapify)
+library(ggridges)
+library(lubridate)
+library(boxoffice)
+my_colour = "firebrick4"
+ggplot2::theme_set(ggplot2::theme_minimal())
+ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free", 
+                                 size = 20, 
+                                 colour = my_colour),
+             axis.text = ggplot2::element_text(colour = my_colour),
+             rect = element_rect(colour = my_colour),
+             line = element_line(colour = my_colour))
+caption = "@DataVis_2020 Eugene"
+
+my_ordinal_date <- function(dates){
+     dayy <- day(dates)
+     suff <- case_when(dayy %in% c(11,12,13) ~ "th",
+                       dayy %% 10 == 1 ~ 'st',
+                       dayy %% 10 == 2 ~ 'nd',
+                       dayy %% 10 == 3 ~'rd',
+                       TRUE ~ "th")
+     paste0(dayy, suff)
+ }
+
+```
+
+```{r data, cache = T}
+# url <- paste0("https://raw.githubusercontent.com/rfordatascience/",
+# "tidytuesday/master/data/2019/2019-12-17/dog_descriptions.csv")
+# dogs <- read_csv(url)
+boxoffice_date <- Sys.Date()-7
+movies <- boxoffice(boxoffice_date) %>% 
+  mutate(gross = gross / 1e3,
+         movie_name = movie,
+         movie = abbreviate(movie))
+
+```
+
+
+
+```{r barplot, echo = T, , fig.height=6}
+diamonds %>% 
+  ggplot(aes(cut)) + 
+  geom_bar(fill = "firebrick4", alpha = 0.6) + 
+  labs(caption = "@Data tidyverse")
+```
+
+---
+
+```{r barplot2, echo=TRUE, fig.height=5}
+diamonds %>% 
+  ggplot(aes(cut)) + 
+  geom_bar(fill = "firebrick4") + 
+  ggtitle("Proportion of Cuts of Diamonds") + 
+  labs(caption = "@Data tidyverse") +
+  coord_flip() +
+  theme(axis.text.x = element_blank()) + 
+  theme(axis.title = element_blank()) + 
+  theme(title = element_text(face = "bold"))
+```
+
+
+---
+
+```{r box_office, echo = T, fig.height=4}
+boxoffice_date_string <- glue::glue("{my_ordinal_date(boxoffice_date)}, {month(boxoffice_date, label = T, abbr = F)}, {year(boxoffice_date)}")
+movies %>% mutate(movie = fct_reorder(movie, gross)) %>% 
+  slice_head(n=10) %>% 
+  ggplot(aes(movie, gross)) + 
+  geom_col(fill = "firebrick4") + 
+  scale_y_continuous(breaks = scales::breaks_extended(8), 
+                     labels = scales::label_dollar(scale = 1)) + 
+  labs(title = glue::glue("Box Office for {boxoffice_date_string}"),
+       caption = "@Data from BoxOfficeMojo",
+       y = "Gross ($k)") +
+  coord_flip()
+```
+
+
+---
+
+```{r colplot_gapminder, echo = T, fig.height=6}
+gapminder %>% 
+  filter(year == "2007") %>% 
+  group_by(continent) %>% 
+  summarise(life__expectancy_2007 = mean(lifeExp)) %>%
+  ggplot(aes(continent, life__expectancy_2007)) + 
+  geom_col() + 
+  coord_flip() +
+  labs(caption = "@Data Gapminder (WHO)")
+```
+
+---
+
+```{r dotplot_gapminder, echo = T, fig.height=6}
+gapminder %>% 
+  filter(year == "2007") %>% 
+  group_by(continent) %>% 
+  summarise(life__expectancy_2007 = mean(lifeExp)) %>%
+  ggplot(aes(continent, life__expectancy_2007)) + 
+  geom_point(colour = "firebrick4", size = 4) + 
+  coord_flip() +
+  labs(caption = "@Data Gapminder (WHO)")
+```
+
+---
+
+```{r lollypop_gapminder, echo = T, fig.height=5}
+gapminder %>% 
+  filter(year == "2007") %>% 
+  group_by(continent) %>% 
+  summarise(life_expectancy_2007 = mean(lifeExp)) %>%
+  mutate(continent = fct_reorder(continent, life_expectancy_2007)) %>% 
+  ggplot(aes(continent, life_expectancy_2007)) + 
+  geom_point(colour = "firebrick4", size = 10) + 
+  geom_segment(aes(x = continent, xend = continent, y = 0, yend = life_expectancy_2007),
+               size = 2, colour = "firebrick4") +
+  coord_flip() +
+  labs(caption = "@Data Gapminder (WHO)")
+```
+
+---
+
+## Summary of Amounts
+
+- have categorical variable and a count / quantity
+- geom_bar() does a count, does some processing for you
+- geom_col() when you have quantities already
+- dot plot with geom_point() doesn't have to include origin
+- lollypop pop same as geom_col() but with less ink. Uses geom_point() and geom_segment()
+- coord_flip() useful, especially when text labels are long
+- important to get order of categorical variable right, fct_reorder() useful
+
+---
+
+class: center, inverse
+
+# Visualising Proportions
+
+- stacked barplot
+- pie chart
+- waffle plot
+ 
+---
+
+```{r pop_gapminder, echo = T, fig.height=5}
+gapminder %>%
+  filter(year == "2007") %>%
+  mutate(pop = round(pop / 1e6, 0)) %>%
+  group_by(continent) %>%
+  summarise(population = sum(pop)) %>%
+  mutate(continent = fct_reorder(continent, population)) %>%
+  ggplot(aes(1, population, fill = continent)) +
+    geom_col(position = "stack", show.legend = F) +
+    ylab("Population (Millions)") + 
+    geom_text_repel(aes(label = glue("{continent}: {population}M")),  
+              position = position_stack(vjust = .5), size = 6) +
+    theme_void()
+```
+
+---
+
+
+```{r pie_gapminder, echo = T, fig.height=4}
+gapminder %>%
+  filter(year == "2007") %>%
+  mutate(pop = round(pop / 1e6, 0)) %>%
+  group_by(continent) %>%
+  summarise(population = sum(pop)) %>%
+  mutate(continent = fct_reorder(continent, population)) %>%
+  ggplot(aes(1, population, fill = continent)) +
+    geom_col(position = "stack", show.legend = F) +
+    ylab("Population (Millions)") + 
+    geom_text_repel(aes(label = glue("{continent}: {population}M")),  
+              position = position_stack(vjust = .5), size = 6) +
+    theme_void() +
+    coord_polar(theta = "y")
+```
+
+---
+
+```{r waffle, echo=T, fig.height=6}
+gapminder %>%
+  filter(year == "2007") %>%
+  mutate(pop = pop / 1e3) %>%
+  group_by(continent) %>%
+  summarise(population = (sum(pop) / 1e5) %>% ceiling()) %>%
+  mutate(continent = fct_reorder(continent, population)) %>% pull(population) %>%
+  waffle(rows = 5, legend_pos = "none")
+```
+
+---
+
+```{r treemap, echo = T, fig.height=5, cache = T}
+read_delim(glue("https://raw.githubusercontent.com/eugene100hickey/DataVis_2020/master/ireland_cattle.csv?token=ADCNXCLOQWXRR3HFVCW5JRK7QNTUW"), delim = "\t") %>% 
+  ggplot(aes(area = herd, fill = province, label = county)) + 
+    geom_treemap() + 
+    geom_treemap_text(fontface = "italic", 
+                      colour = "white", 
+                      place = "centre", 
+                      grow = T) +
+  labs(caption = "@Data from eurostat and IBGF")
+```
+
+---
+
+## Summary of Proportions
+
+- have categorical variable and a count / quantity
+- want to know relative amounts of each
+- options are stacked bars, pie, waffle, treemap
+- I'm not a huge fan of any of these

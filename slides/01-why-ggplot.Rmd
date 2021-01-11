@@ -1,0 +1,311 @@
+---
+title: "NHS Workshop<br>Introduction to ggplot"
+subtitle: "Starting ggplot"
+session: "10:00-11:00"
+author: "Eugene Hickey"
+institute: "Technological University Dublin"
+date: "January 21st 2021"
+output:
+  xaringan::moon_reader:
+    css: 
+      - default
+      - css/mytheme.css
+      - css/mytheme-fonts.css
+    lib_dir: libs
+    seal: false
+    self_contained: true
+    nature:
+      highlightStyle: googlecode
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "macros.js"
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+
+```{r meta, echo=FALSE, message=FALSE, warning=FALSE}
+library(metathis)
+meta() %>%
+  meta_general(
+    description = "An Introduction ggplot",
+    generator = "xaringan and remark.js"
+  ) %>% 
+  meta_name("github-repo" = "eugene100hickey/ggplot-intro") %>% 
+  meta_social(
+    title = "Introduction to ggplot",
+    url = "https://into-ggplot-nhsr.netlify.app",
+    image = "https://github.com/eugene100hickey/blob/main/moon.png",
+    image_alt = "Front page for Introduction to ggplot",
+    og_type = "website",
+    og_author = "Eugene Hickey",
+    twitter_card_type = "summary_large_image",
+    twitter_creator = "@eugene100hickey"
+  )
+```
+
+```{r setup, include = FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+library(tidyverse)
+library(xaringanExtra)
+library(nhsrtheme)
+library(NHSRdatasets)
+library(flipbookr)
+library(factoextra)
+# set default options
+opts_chunk$set(echo=FALSE,
+               collapse = TRUE,
+               fig.width = 7.252,
+               fig.height = 4,
+               dpi = 300,
+               cache = TRUE,
+               message = FALSE,
+               warning = FALSE)
+
+xaringanExtra::use_tile_view()
+xaringanExtra::use_panelset()
+xaringanExtra::use_clipboard()
+xaringanExtra::use_webcam()
+xaringanExtra::use_broadcast()
+xaringanExtra::use_share_again()
+xaringanExtra::style_share_again(
+  share_buttons = c("twitter", "linkedin", "pocket")
+)
+
+```
+
+
+class: title-slide, right, top
+background-image: url(img/moon.JPG)
+background-position: 90% 75%, 75% 75%
+background-size:cover
+
+.left-column[
+# `r rmarkdown::metadata$title`
+] 
+
+.right-column[
+### `r rmarkdown::metadata$subtitle`
+
+**`r rmarkdown::metadata$author`**<br>
+`r rmarkdown::metadata$date`
+]
+
+
+.palegrey[.left[.footnote[Graphic by [Elaine Hickey](https://photos.google.com/photo/AF1QipMjKNoaxyne8nte4HmxA6Th9-4fUfSbl_mx-_1G)]]]
+
+???
+
+Welcome to the workshop on ggplot.
+
+Where we'll show you how to create impressive data visualisations.
+
+---
+name: about-me
+layout: false
+class: about-me-slide, inverse, middle, center
+
+# About me
+
+<img style="border-radius: 50%;" src="img/eugene.jpg" width="150px"/>
+
+## Eugene Hickey
+
+### lecturer in physics
+
+.fade[Technological University<br>Dublin]
+
+[`r icon::fa("link")` bioscience.netlify.app](https://bioscience.netlify.app)
+[`r icon::fa("twitter")` @eugene100hickey](https://twitter.com/eugene100hickey)
+[`r icon::fa("github", size = 1)` eugene100hickey](https://github.com/eugene100hickey)
+
+---
+layout: true
+
+<a class="footer-link" href="http://intro-ggplot-nhs.netlify.app">intro-ggplot-nhs &mdash; Eugene Hickey</a>
+
+<!-- this adds the link footer to all slides, depends on footer-link class in css-->
+
+---
+class: top
+
+# Acknowledgments
+
+.pull-left-narrow[.center[<img style="border-radius: 50%;" src="https://www.strategyunitwm.nhs.uk/sites/default/files/styles/banner/public/Sharon_Townsend.jpg?itok=_S1ntVbo" width="100px"/>]]
+
+.pull-right-wide[
+[Sharon Townsend](https://www.strategyunitwm.nhs.uk/author/sharon-townsend), co-pilot for this workshop and business manager at the NHS, Midlands and Lancashire Strategy Unit.
+]
+
+--
+
+.pull-left-narrow[.center[
+<img style="border-radius: 50%;" src="https://avatars0.githubusercontent.com/u/53170984?s=200&v=4" width="125px"/>]]
+
+.pull-right-wide[
+[NHS-R Community](https://nhsrcommunity.com/) for the opportunity to provide this workshop
+- [NHSRdatasets `r emo::ji("package")`](https://github.com/nhs-r-community/NHSRdatasets) developed by Chris Mainey and Tom Jemmett
+]
+
+--
+
+.pull-left-narrow[.center[
+`r icon::fa("smile", size = 3, color = "#e5bf00")`]]
+
+.pull-right-wide[
+- [xaringan `r emo::ji("package")`](https://github.com/yihui/xaringan#xaringan) developed by Yihui Xie
+- [flipbookr `r emo::ji("package")`](https://github.com/EvaMaeRey/flipbookr) developed by Gina Reynolds
+- [learnr `r emo::ji("package")`](https://github.com/rstudio/learnr) developed by Garrick Aden-Buie
+]
+
+---
+
+# Target Audience
+
+- people with some experience of R, but haven't made the plunge to ggplot. __Just yet__. 
+
+- do data analysis in R and provide visualisations using base graphics, or something else. 
+
+---
+
+# Why ggplot?
+
+- while some plots can be easier to produce using base graphics
+
+
+.pull-left[
+
+```{r base_hist, include = TRUE, out.width="80%", echo = T}
+hist(LOS_model$Age)
+```
+
+]
+
+.pull-right[
+
+```{r ggplot_hist, include = TRUE, out.width="80%", echo = T}
+ggplot(data = LOS_model, aes(Age)) +
+  geom_histogram(bins = 10)
+```
+
+]
+
+---
+
+# Why ggplot?
+
+- anything moderately complicated is better in ggplot
+
+```{r}
+top_data <- readRDS("data/top_data.rds")
+```
+
+
+.pull-left[
+```{r baseplot-label, eval=FALSE, echo = TRUE}
+# David Robinson
+# http://varianceexplained.org/r/why-I-use-ggplot2/
+par(mar = c(1.5, 1.5, 1.5, 1.5))
+
+colors <- 1:6
+names(colors) <- unique(top_data$nutrient)
+
+# legend approach from http://stackoverflow.com/a/10391001/712603
+m <- matrix(c(1:20, 21, 21, 21, 21), nrow = 6, ncol = 4, byrow = TRUE)
+layout(mat = m, heights = c(.18, .18, .18, .18, .18, .1))
+
+top_data$combined <- paste(top_data$name, top_data$systematic_name)
+for (gene in unique(top_data$combined)) {
+    sub_data <- filter(top_data, combined == gene)
+    plot(expression ~ rate, sub_data, col = colors[sub_data$nutrient], main = gene)
+    for (n in unique(sub_data$nutrient)) {
+        m <- lm(expression ~ rate, filter(sub_data, nutrient == n))
+        if (!is.na(m$coefficients[2])) {
+            abline(m, col = colors[n])
+        }
+    }
+}
+
+# create a new plot for legend
+plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
+legend("top", names(colors), col = colors, horiz = TRUE, lwd = 4)
+```
+]
+
+.pull-right[
+```{r baseplot-label-out, ref.label="baseplot-label", echo=FALSE, fig.height=9}
+```
+]
+
+---
+
+# Why ggplot?
+
+- anything moderately complicated is better in ggplot
+
+.pull-left[
+```{r ggplot-label, eval=FALSE, echo = TRUE}
+ggplot(top_data, aes(rate, expression, color = nutrient)) +
+    geom_point(show.legend = FALSE) +
+    geom_smooth(method = "lm", se = FALSE, show.legend = FALSE) +
+    facet_wrap(~systematic_name, scales = "free_y")
+```
+]
+
+.pull-right[
+```{r ggplot-label-out, ref.label="ggplot-label", echo=FALSE, fig.height=9}
+```
+]
+
+---
+
+# Lots of addin packages for ggplot
+
+```{r}
+gg_packages <- rownames(available.packages(repos = "http://cran.us.r-project.org")) %>% 
+  str_subset("^gg")
+```
+
+`r gg_packages`
+
+
+---
+
+# And others, that make ggplots that can then be modified and treated as such
+
+```{r}
+k_USA <- kmeans(USArrests %>% scale(), centers = 4, nstart = 25)
+fviz_cluster_example <- fviz_cluster(k_USA, USArrests %>% scale(), repel = T, stand = TRUE) + theme(legend.position = "none")
+```
+
+.pull-left[
+```{r, echo = T}
+fviz_cluster_example
+```
+]
+
+.pull-right[
+```{r, echo = T}
+fviz_cluster_example + theme_classic()
+```
+]
+
+
+---
+
+# Other reasons
+
+- ggplot is easy to make publication-ready  
+
+- easier to make sequence of visualisations  
+
+- fits in nicely with the rest of the tidyverse
+
+
+
+
+

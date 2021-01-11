@@ -10,8 +10,10 @@ navbar:
       href: "https://nhsrcommunity.com/"
     - text: "Slides"
       menu:
-        - text: "Morning 10:00-13:00: The Basics"
+        - text: "Morning 10:00-11:00: The Basics"
           href: "slides/day-01-basics.html"
+        - text: "Morning 11:00-12:00: The Mechanics"
+          href: "slides/day-01-mechanics.html"
         - text: "Afternoon 13:30-16:00 Extras"
           href: "slides/day-02-beyond.html"
     - icon: fab fa-youtube

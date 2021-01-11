@@ -1,0 +1,354 @@
+---
+title: "NHS Workshop<br>Introduction to ggplot"
+subtitle: "Mechanics of ggplot part 2"
+session: "11:00-12:00"
+author: "Eugene Hickey"
+institute: "Technological University Dublin"
+date: "January 21st 2021"
+output:
+  xaringan::moon_reader:
+    css: 
+      - default
+      - css/mytheme.css
+      - css/mytheme-fonts.css
+    lib_dir: libs
+    seal: false
+    self_contained: true
+    nature:
+      highlightStyle: googlecode
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "macros.js"
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+
+```{r meta, echo=FALSE, message=FALSE, warning=FALSE}
+library(metathis)
+meta() %>%
+  meta_general(
+    description = "An Introduction ggplot",
+    generator = "xaringan and remark.js"
+  ) %>% 
+  meta_name("github-repo" = "eugene100hickey/ggplot-intro") %>% 
+  meta_social(
+    title = "Introduction to ggplot",
+    url = "https://into-ggplot-nhsr.netlify.app",
+    image = "https://github.com/eugene100hickey/blob/main/ice.JPG",
+    image_alt = "Front page for Introduction to ggplot",
+    og_type = "website",
+    og_author = "Eugene Hickey",
+    twitter_card_type = "summary_large_image",
+    twitter_creator = "@eugene100hickey"
+  )
+```
+
+
+
+
+```{r setup, include = FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+library(scales)
+library(gapminder)
+library(ggrepel)
+library(glue)
+library(waffle)
+library(treemapify)
+library(ggridges)
+library(lubridate)
+library(boxoffice)
+library(knitr)
+library(xaringanExtra)
+library(nhsrtheme)
+library(NHSRdatasets)
+library(flipbookr)
+library(factoextra)
+library(ggtext)
+library(hrbrthemes)
+library(HistData)
+library(patchwork)
+library(dslabs)
+library(ggalt)
+# set default options
+opts_chunk$set(echo=FALSE,
+               collapse = TRUE,
+               # fig.width = 7.252,
+               # fig.height = 4,
+               dpi = 300,
+               cache = TRUE,
+               message = FALSE,
+               warning = FALSE)
+
+xaringanExtra::use_tile_view()
+xaringanExtra::use_panelset()
+xaringanExtra::use_clipboard()
+xaringanExtra::use_webcam()
+xaringanExtra::use_broadcast()
+xaringanExtra::use_share_again()
+xaringanExtra::style_share_again(
+  share_buttons = c("twitter", "linkedin", "pocket")
+)
+
+```
+
+```{r theme, cache = F}
+
+my_colour = "firebrick4"
+ggplot2::theme_set(ggplot2::theme_minimal())
+ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free", 
+                                 size = 20, 
+                                 colour = my_colour),
+             axis.text = ggplot2::element_text(colour = my_colour),
+             rect = element_rect(colour = my_colour),
+             line = element_line(colour = my_colour))
+caption = "@DataVis_2020 Eugene"
+
+my_ordinal_date <- function(dates){
+     dayy <- day(dates)
+     suff <- case_when(dayy %in% c(11,12,13) ~ "th",
+                       dayy %% 10 == 1 ~ 'st',
+                       dayy %% 10 == 2 ~ 'nd',
+                       dayy %% 10 == 3 ~'rd',
+                       TRUE ~ "th")
+     paste0(dayy, suff)
+ }
+
+basketball <- read_csv("data/basketball.csv")
+```
+
+class: title-slide, right, top
+background-image: url(img/sunrise.JPG)
+background-position: 90% 75%, 75% 75%
+background-size:cover
+
+.left-column[
+# `r rmarkdown::metadata$title`
+] 
+
+.right-column[
+### `r rmarkdown::metadata$subtitle`
+
+**`r rmarkdown::metadata$author`**<br>
+`r rmarkdown::metadata$date`
+]
+
+
+.palegrey[.left[.footnote[Graphic by [Elaine Hickey](https://photos.google.com/photo/AF1QipMjKNoaxyne8nte4HmxA6Th9-4fUfSbl_mx-_1G)]]]
+
+???
+
+Welcome to the workshop on ggplot.
+
+Where we'll show you how to create impressive data visualisations.
+
+---
+
+
+# Picturing Data Different Ways with ggplot
+
+### We're going to set out some of the options for looking at data
+
+### these depend on what kind of data you have
+
+### and what you want to investigate
+
+Lots of these come from [Top 50 Visualizations in R](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#5.%20Composition)
+
+
+
+---
+
+<ol>
+<li> Visualising Amounts
+<li> Visualising Proportions
+<li><span style="color: red;"> Visualising Distributions </span>
+<li><span style="color: red;"> Visualising Relationships </span>
+<li><span style="color: blue;"> Visualising Time Series </span>
+<li><span style="color: blue;"> Visualising Groups </span>
+<li><span style="color: blue;"> Visualising Networks </span>
+<li><span style="color: blue;"> Visualising Spatial Data </span>
+
+Items in <span style="color: red;">red</span> we'll cover this afternoon. In <span style="color: blue;">blue</span> will have to wait for a future workshop.
+
+---
+class: inverse
+
+
+# Visualising Distributions
+
+- histograms
+- density plots
+- boxplot
+- violin plot
+- ridge plots
+
+---
+
+```{r histogram, echo = T, include=F}
+basketball %>% 
+  ggplot(aes(weight)) + 
+  geom_histogram(fill = "firebrick4", 
+                 bins = 50) + 
+  labs(x = "weight (kg)", 
+       y = "",
+       caption = "@Data from Kaggle",
+       title = "Weight of NBA Players")
+```
+
+`r chunk_reveal("histogram")`
+
+---
+
+```{r histogram-dodge, echo = T, fig.height=6, include = FALSE}
+basketball %>% 
+  ggplot(aes(weight, 
+             fill = position)) + 
+  geom_histogram(bins = 20, 
+                 position = "dodge") + 
+  labs(x = "weight (kg)", 
+       y = "",
+       caption = "@Data from Kaggle", 
+       title = "Weight of NBA Players by Position")
+```
+
+`r chunk_reveal("histogram-dodge")`
+
+---
+
+```{r density, echo = T, fig.height=6, include = FALSE}
+basketball %>% 
+  ggplot(aes(weight, 
+             col = position)) + 
+  stat_density(geom = "line", 
+               position = "identity") + 
+  labs(x = "weight (kg)", 
+       y = "",
+       caption = "@Data from Kaggle", 
+       title = "Weight of NBA Players by Position") +
+  geom_rug()
+```
+
+`r chunk_reveal("density")`
+
+---
+
+
+```{r boxplots, echo = T, fig.height=6, include = FALSE}
+basketball %>% 
+   ggplot(aes(x = position, 
+              y = weight, 
+              colour = position)) +
+   geom_boxplot(show.legend = F) + 
+   labs(y = "weight (kg)", 
+        x = "position",
+        caption = "@Data from Kaggle", 
+        title = "Weight of NBA Players by Position") +
+  geom_jitter(size = 0.4, 
+              alpha = 0.2, 
+              show.legend = F)
+```
+
+`r chunk_reveal("boxplots")`
+
+```{r violins, echo = T, fig.height=6, include = FALSE}
+basketball %>% 
+   ggplot(aes(x = position, 
+              y = weight, 
+              colour = position)) + 
+   geom_violin(show.legend = F) + 
+   labs(x = "position",
+        y = "weight (kg)",
+        caption = "@Data from Kaggle", 
+        title = "Weight of NBA Players by Position") +
+   geom_jitter(size = 0.4, 
+               alpha = 0.2, 
+               show.legend = F)
+```
+
+`r chunk_reveal("violins")`
+
+---
+
+```{r ridges, echo = T, fig.height=6, include = FALSE}
+gapminder::gapminder %>% 
+  ggplot(aes(x = lifeExp, 
+             y = factor(year))) +
+  geom_density_ridges(fill = "firebrick4", 
+                      colour = "firebrick4", 
+                      alpha = 0.4) +
+  theme_ridges() +
+  labs(x = "Life Expectancy (years)",
+       y = "", 
+       caption = "@Data Gapminder (WHO)")
+```
+
+`r chunk_reveal("ridges")`
+
+---
+class: inverse
+
+## Summary of Distributions
+
+- hugely important
+- great way to explore your data / introduce it to others
+- make sure you show you data when possible
+    - use *geom_rug()*
+    - use *geom_jitter()*
+    - if lots of points, then use *alpha* to mute them
+    
+---
+
+class: inverse
+
+# Visualising Relationships
+
+- scatter plots
+    - encircling
+    - jittering
+    - using colour / size / shape 
+    - fitting lines
+    - histograms and boxplots on the axes (and geom_rug())
+- line plots
+- correlation
+
+
+---
+
+```{r encircleplot, echo = T, fig.height=4, include = FALSE}
+
+stars %>% 
+  ggplot(aes(temp, 
+             magnitude, 
+             col = type)) + 
+  geom_point(show.legend = F) +
+  geom_encircle(data = stars %>% 
+                  dplyr::filter(type == "B" | (type == "M" & magnitude > 9)), 
+                show.legend = F) +
+  scale_x_log10() + 
+  annotate("text", 
+           x = c(15000, 5000), 
+           y = c(-4, 14), 
+           label = c("Type B Stars", "Faint Type M Stars"), 
+           col = c("blue", "olivedrab3"), 
+           family = "Ink Free", 
+           size = 4, 
+           fontface = 2) + 
+  scale_color_viridis_d()
+```
+
+`r chunk_reveal("encircleplot")`
+
+---
+
+```{r jitter, echo = T, fig.height=6, fig.width=12}
+scatter <- Galton %>% 
+  ggplot(aes(parent, child)) +
+  geom_point()
+jittered <- Galton %>% ggplot(aes(parent, child)) + geom_jitter(width = 0.4, height = 0.4)
+scatter + plot_spacer() + jittered 
+```

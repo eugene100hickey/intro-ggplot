@@ -1,0 +1,240 @@
+---
+title: "ggplot - a Pantheon of Visualisations"
+author: "Eugene"
+date: "`r format(Sys.Date(), '%B %d %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [TUD01, TUD02, tamu-fonts]
+
+---
+
+
+# Picturing Data Different Ways with ggplot
+
+### We're going to set out some of the options for looking at data
+
+### these depend on what kind of data you have
+
+### and what you want to investigate
+
+Lots of these come from [Top 50 Visualizations in R](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#5.%20Composition)
+
+
+
+---
+
+<ol>
+<li> Visualising Amounts
+<li> Visualising Proportions
+<li><span style="color: red;"> Visualising Distributions </span>
+<li><span style="color: red;"> Visualising Relationships </span>
+<li>Visualising Time Series
+<li>Visualising Groups
+<li>Visualising Networks
+<li>Visualising Spatial Data
+
+Items in <span style="color: red;">red</span> we'll cover this week.
+
+
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F, cache = F)
+```
+
+```{r libraries, cache = F}
+library(tidyverse)
+library(scales)
+library(gapminder)
+library(ggrepel)
+library(glue)
+library(waffle)
+library(treemapify)
+library(ggridges)
+library(lubridate)
+library(boxoffice)
+my_colour = "firebrick4"
+ggplot2::theme_set(ggplot2::theme_minimal())
+ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free", 
+                                 size = 20, 
+                                 colour = my_colour),
+             axis.text = ggplot2::element_text(colour = my_colour),
+             rect = element_rect(colour = my_colour),
+             line = element_line(colour = my_colour))
+caption = "@DataVis_2020 Eugene"
+
+my_ordinal_date <- function(dates){
+     dayy <- day(dates)
+     suff <- case_when(dayy %in% c(11,12,13) ~ "th",
+                       dayy %% 10 == 1 ~ 'st',
+                       dayy %% 10 == 2 ~ 'nd',
+                       dayy %% 10 == 3 ~'rd',
+                       TRUE ~ "th")
+     paste0(dayy, suff)
+ }
+
+```
+
+```{r data, cache = T}
+# url <- paste0("https://raw.githubusercontent.com/rfordatascience/",
+# "tidytuesday/master/data/2019/2019-12-17/dog_descriptions.csv")
+# dogs <- read_csv(url)
+boxoffice_date <- Sys.Date()-7
+movies <- boxoffice(boxoffice_date) %>% 
+  mutate(gross = gross / 1e6,
+         movie = abbreviate(movie))
+
+```
+
+
+
+class: center, inverse
+
+# Visualising Distributions
+
+- histograms
+- density plots
+- boxplot
+- violin plot
+- ridge plots
+
+---
+
+```{r histogram, echo = T, fig.height=5}
+basketball <- read_csv(glue("https://raw.githubusercontent.com/eugene100hickey/DataVis_2020/master/basketball.csv?token=ADCNXCIJQV7TBVNWLF77UQC7RGRA6"))
+basketball %>% 
+  ggplot(aes(weight)) + 
+  geom_histogram(fill = "firebrick4", bins = 50) + 
+  labs(caption = "@Data from Kaggle", x = "weight (kg)", y = "",
+       title = "Weight of NBA Players")
+```
+
+---
+
+```{r histogram_dodge, echo = T, fig.height=6}
+basketball %>% 
+  ggplot(aes(weight, fill = position)) + 
+  geom_histogram(bins = 20, position = "dodge") + 
+  labs(caption = "@Data from Kaggle", x = "weight (kg)", y = "",
+       title = "Weight of NBA Players by Position")
+```
+
+---
+
+```{r density, echo = T, fig.height=6}
+basketball %>% 
+  ggplot(aes(weight, col = position)) + 
+  stat_density(geom = "line", position = "identity") + 
+  labs(caption = "@Data from Kaggle", x = "weight (kg)", y = "",
+       title = "Weight of NBA Players by Position") +
+  geom_rug()
+```
+
+---
+
+
+```{r boxplots, echo = T, fig.height=6}
+basketball %>% 
+   ggplot(aes(x = position, y = weight, colour = position)) + 
+   geom_boxplot(show.legend = F) + 
+   labs(caption = "@Data from Kaggle", y = "weight (kg)", x = "position",
+        title = "Weight of NBA Players by Position")
+```
+
+---
+
+```{r boxplots_points, echo = T, fig.height=6}
+basketball %>% 
+   ggplot(aes(x = position, y = weight, colour = position)) + 
+   geom_boxplot(show.legend = F) + 
+   labs(caption = "@Data from Kaggle", y = "weight (kg)", x = "position",
+        title = "Weight of NBA Players by Position") +
+  geom_jitter(size = 0.4, alpha = 0.2, show.legend = F)
+```
+
+---
+
+```{r violins, echo = T, fig.height=6}
+basketball %>% 
+   ggplot(aes(x = position, y = weight, colour = position)) + 
+   geom_violin(show.legend = F) + 
+   labs(caption = "@Data from Kaggle", y = "weight (kg)", x = "position",
+        title = "Weight of NBA Players by Position") +
+   geom_jitter(size = 0.4, alpha = 0.2, show.legend = F)
+```
+
+---
+```{r ridges, echo = T, fig.height=6}
+gapminder %>% ggplot(aes(x = lifeExp, y = factor(year))) +
+  geom_density_ridges(fill = "firebrick4", colour = "firebrick4", alpha = 0.4) +
+  theme_ridges() +
+  labs(x = "Life Expectancy (years)", y = "", caption = "@Data Gapminder (WHO)")
+```
+
+---
+
+## Summary of Distributions
+
+- hugely important
+- great way to explore your data / introduce it to others
+- make sure you show you data when possible
+    - use *geom_rug()*
+    - use *geom_jitter()*
+    - if lots of points, then use *alpha* to mute them
+    
+---
+
+class: center, inverse
+
+# Visualising Relationships
+
+- scatter plots
+    - encircling
+    - jittering
+    - using colour / size / shape 
+    - fitting lines
+    - histograms and boxplots on the axes (and geom_rug())
+- line plots
+- correlation
+
+---
+
+```{r scatterplot, echo = T, fig.height=6}
+library(dslabs)
+
+stars %>% 
+  ggplot(aes(temp, magnitude, col = type)) + 
+  geom_point(show.legend = F)
+```
+
+
+---
+
+```{r encircleplot, echo = T, fig.height=4}
+library(ggalt)
+
+stars %>% 
+  ggplot(aes(temp, magnitude, col = type)) + 
+  geom_point(show.legend = F) +
+  geom_encircle(data = stars %>% 
+                  filter(type == "B" | (type == "M" & magnitude > 9)), show.legend = F) +
+  scale_x_log10() + 
+  theme_minimal() + 
+  annotate("text", x = c(15000, 5000), y = c(-4, 14), 
+           label = c("Type B Stars", "Faint Type M Stars"), 
+           col = c("blue", "olivedrab3"), family = "Ink Free", size = 4, fontface = 2) + 
+  scale_color_viridis_d()
+```
+
+---
+
+```{r jitter, echo = T, fig.height=6, fig.width=12}
+library(HistData)
+library(patchwork)
+
+scatter <- Galton %>% ggplot(aes(parent, child)) + geom_point()
+jittered <- Galton %>% ggplot(aes(parent, child)) + geom_jitter(width = 0.4, height = 0.4)
+
+scatter + plot_spacer() + jittered 
+```
+

@@ -1,0 +1,226 @@
+---
+title: "Themes (and fonts and scales)"
+author: "Eugene"
+date: "`r format(Sys.Date(), '%B %d %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [TUD01, TUD02, tamu-fonts]
+
+header-includes:
+- \usepackage{multicol}
+- \newcommand{\btwocol}{\begin{multicols}{2}}
+- \newcommand{\etwocol}{\end{multicols}}
+---
+
+class: center, inverse
+
+# <p style="font-family:'Cabin Sketch'">Using Themes in R</p>
+<br>
+
+### We'll also discuss fonts (first) and scales.
+- themes give fine control to the appearance of your plots
+    - control over text size, fonts, text colour, etc
+    - position of legends, titles, captions, etc
+    - colours of backgrounds
+    - delete unwanted features (like, say, tick marks on an axis)
+    
+---
+
+class: center, inverse
+
+
+- large number of preset themes
+    - the _Wall Street Journal_ theme we used in assignment two
+- several packages with neat bundle of useful themes
+- and, of course, we can develop our own theme to have consistent graphics
+
+---
+
+## Fonts
+
+- we'll discuss this first, as often themes require fonts which might not be present
+- fonts are a whole world of their own
+- see [practicaltypography.com](practicaltypography.com)
+- great talk by [Will Chase](https://rstudio.com/resources/rstudioconf-2020/the-glamour-of-graphics/) at RStudioConf2020
+
+---
+
+- need to be in the system, load them into windows / mac / linux
+    - only really works for true type fonts (.ttf)
+    - go to folder where the R library lives and seek out fonts
+        - type **.libPaths()** to find out where
+    - e.g. R/x86_64-pc/3.6/tvthemes/fonts/SpongeBob
+    - click on .ttf files to install
+    
+---
+    
+- then need to capture them  in R
+    - install package *extrafont*
+    - run *ttf_import()* with path = folder from above
+    - run *View(fonttable())* to check available fonts
+    - usually need to restart R (*Session* then *Restart R*)
+    
+---
+
+- can also use the *showtext* package
+    - use _font_add()_ function
+    - then _showtext_auto()_
+    
+---
+
+```{r setup, echo = F, message=F, warning=F}
+library(tidyverse)
+library(scales)
+library(gapminder)
+library(showtext)
+font_add("Ink Free", "/home/eugene/Desktop/Academic/Research/R_Fun/fonts/Inkfree.ttf")
+font_add("Get Schwifty", "/home/eugene/Desktop/Academic/Research/R_Fun/fonts/get_schwifty.ttf")
+font_add("Fiendish", "/home/eugene/Desktop/Academic/Research/R_Fun/fonts/Fiendish.ttf")
+font_add("Cabin Sketch", "/home/eugene/Desktop/Academic/Research/R_Fun/fonts/CabinSketch-Regular.ttf")
+my_theme <- theme_get()
+```
+
+- can also use google fonts using the *showtext* package
+
+```{r google_fonts, message=F, warning=F, fig.height=4}
+library(showtext)
+font_add_google("Jolly Lodger", "some_font_name")
+showtext_auto()
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
+  geom_point(show_legend = F) +
+  theme(text = element_text(family = "some_font_name", size = 20))
+
+```
+
+- type *font_info_google()* to find them
+        
+
+---
+## Complete Themes
+- these set up ggplots with standard appearances
+- can always adjust these, but do so in a layer after invoking the theme
+- some defaults in ggplot2, see [here](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+- you should experiment with these to see how they look
+
+
+
+---
+.pull-left[
+
+```{r themes1, warning=F, message=F}
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
+  geom_point() +
+  theme_classic()
+```
+
+]
+.pull-right[
+```{r themes2, warning=F, message=F}
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) + 
+  geom_point() +
+  theme_dark()
+```
+
+]
+
+---
+
+## Complete Themes
+
+- other package provide supplementary themes
+    - *ggthemes*
+    - *ggthemr* (see [here](https://github.com/cttobin/ggthemr))
+    - *tvthemes* (see [here](https://ryo-n7.github.io/2019-05-16-introducing-tvthemes-package/))
+    - *hrbrthemes* see [here](https://github.com/hrbrmstr/hrbrthemes)
+    - *firatheme* (see [here](https://github.com/vankesteren/firatheme))
+    - *bbplot*, themes from the BBC (see [here](https://github.com/bbc/bbplot))
+    - *ggtech* themes from companies, e.g. Facebook. See [here](https://github.com/ricardo-bion/ggtech)
+    
+---
+    
+- [This website](https://rfortherestofus.com/2019/08/themes-to-improve-your-ggplot-figures/) is pretty good on themes
+- again, make sure you experiment with these
+
+---
+
+## Fine Control Over Themes
+
+- we can change any feature of a theme that we want
+- type *?theme* on the console to see available themes
+- use *element_&&&&&* to replace theme
+- example: *theme(text = element_text(family = "Roboto Sans"))*
+
+---
+
+
+```{r themes3, fig.height=6, fig.width=9, message=F, warning=F}
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) + 
+  geom_point() +
+  theme(text = element_text(family = "Cabin Sketch", size = 26, face = "bold"))
+```
+
+---
+
+```{r themes4, fig.height=6, fig.width=9, message=F, warning=F}
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
+  geom_point() +
+  theme(legend.position = "bottom", axis.text.y = element_blank())
+```
+
+
+---
+
+- **theme_set()** and **theme_get()** pretty useful
+
+```{r themes5, fig.height=6, fig.width=9, message=F, warning=F}
+theme_set(theme(text = element_text(family = "Fiendish", colour = "#691740", face = "bold")))
+
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
+  geom_point()
+```
+
+
+---
+
+```{r teeth, message=F, warning=F, fig.height=4}
+theme_bluewhite <- function (base_size = 11, base_family = "Get Schwifty") {
+    theme_bw() %+replace% 
+    theme( text = element_text(size = base_size, family = base_family),
+      panel.grid.major  = element_line(color = "white"),
+      panel.background = element_rect(fill = "lightblue"),
+      panel.border = element_rect(color = "lightblue", fill = NA),
+      axis.line = element_line(color = "lightblue"),
+      axis.ticks = element_line(color = "lightblue"),
+      axis.text = element_text(color = "steelblue")
+      )
+}
+ggplot(ToothGrowth, aes(factor(dose), len)) + # Using our new theme
+  geom_boxplot() +
+  theme_bluewhite(base_size = 24)
+```
+
+---
+
+
+
+class: center, inverse
+
+# _scales_
+
+- I like the scales package and feel it's worth discussing
+- We used it to give dollar signs in the last assignment
+- (also, has the _show_col()_ function)
+- can be used to change to scientific notation, or not
+- utilities like _comma()_, _dollar()_, _label_number_si()_, _percent()_, _pretty_breaks()_
+- [this is a nice overview](https://bookdown.org/Maxine/ggplot2-maps/posts/2019-11-27-using-scales-package-to-modify-ggplot2-scale/)
+
+---
+
+```{r gapminder_plot, fig.width=10, fig.height=6}
+gapminder %>% filter(continent == "Americas") %>% ggplot(aes(gdpPercap, pop)) + 
+  geom_line(aes(col = country), show.legend = F) + 
+  scale_y_log10(labels = label_number_si(unit = " people")) +
+  scale_x_log10(labels = dollar) + theme(text = element_text(size = 16), axis.title.y = element_blank())
+```
+
+

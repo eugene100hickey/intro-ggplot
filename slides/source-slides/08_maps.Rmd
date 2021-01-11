@@ -1,0 +1,541 @@
+---
+title: "Mapping in R"
+author: "Eugene"
+date: "`r format(Sys.Date(), '%B %d %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [TUD01, TUD02, tamu-fonts]
+
+header-includes:
+- \usepackage{multicol}
+- \newcommand{\btwocol}{\begin{multicols}{2}}
+- \newcommand{\etwocol}{\end{multicols}}
+---
+
+class: center, inverse
+
+# Maps
+<br>
+
+### Vibrant area of development in R
+### Large, and growing, number of packages available
+### And, both fun and fascinating
+    
+---
+
+## We'll begin by looking at some maps, to get a flavour of what R can do
+
+## Then we'll discuss how it does it
+
+---
+
+- drawing maps from google, different map types
+    - maps of Dublin in terrain, satellite, and roadmap 
+- adding layers to our maps
+    - Irish small airport locations
+- doing some statistics on our maps
+    - where are Irish schools concentrated?
+    - incidence of violence in counties of Sao Paulo
+- using facets in maps
+    - GDP in European countries
+- interactive maps
+    - meteor locations
+- world projections
+
+
+---
+
+# Data with Location Information
+
+```{r setup, echo = F, message=F, warning=F}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(sf)
+library(rworldmap)
+library(tmap)
+library(leaflet)
+library(ggmap)
+library(ggrepel)
+library(ggsn)
+library(geofacet)
+library(rvest)
+library(stringi)
+require(handlr)
+library(lubridate)
+library(colorspace)
+```
+
+```{r echo = T, message=F, warning=F, cache=TRUE, results = 'asis'}
+schools <- read_csv("http://airo.maynoothuniversity.ie/files/dDATASTORE/education/csv/primary_schools_2013_2014.csv")
+schools %>% 
+  select(Off_Name, Add_1, T_13_14, Long, Lat) %>% 
+  head(10) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+---
+
+# Data with Location Information
+
+```{r echo = T, message=F, warning=F, cache=TRUE}
+covid <- read_csv("/home/eugene/Desktop/Academic/Research/CoVid19/time_series_covid_19_confirmed.csv")
+covid %>% 
+  select("Country/Region", Lat, Long, "3/12/20", "3/13/20", "3/14/20") %>% 
+  head(10) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+---
+
+# Data with Location Information
+
+```{r echo = T, message=F, warning=F, cache=TRUE}
+airports <- read_csv("http://data-osi.opendata.arcgis.com/datasets/1ace692fe9fd4a648ee78347ad571de2_22.csv")
+airports %>% 
+  select(X, Y, Airport = NAMN1) %>% 
+  head(10) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+---
+
+## Some Examples of Maps
+
+```{r map1, warning = F, message=F, cache = T, fig.height=5, fig.width=5, fig.align='center'}
+p <- ggmap(get_googlemap(center = c(lon = -7.61, lat = 53.463),
+                     zoom = 7, scale = 2,
+                     maptype ='terrain',
+                     color = 'color'))
+p
+```
+
+---
+
+## Some Examples of Maps
+
+```{r map2, warning = F, message=F, cache = T, fig.height=5, fig.width=5, fig.align='center'}
+p <- ggmap(get_googlemap(center = c(lon = -6.32, lat = 53.3),
+                     zoom = 11, scale = 2,
+                     maptype ='satellite',
+                     color = 'color'))
+p
+```
+
+---
+
+## Some Examples of Maps
+
+```{r map3, warning = F, message=F, cache = T, fig.height=5, fig.width=5, fig.align='center'}
+ggmap(get_googlemap(center = c(lon = -6.32, lat = 53.3),
+                     zoom = 11, scale = 2,
+                     maptype ='roadmap',
+                     color = 'color'))
+```
+
+---
+
+## Maps with Added Layers
+
+
+```{r map4, warning = F, message=F, cache = T, fig.height=5, fig.width=5, fig.align='center'}
+ggmap(get_stamenmap(bbox = c(top = 55.42, bottom = 51.38, right = -5.06, left = -10.7), zoom = 7, scale = 2, maptype ='watercolor', color = 'color')) + 
+  geom_point(data = airports, size = 2,
+             aes(x = X, y = Y), col = "firebrick4") + 
+  geom_text_repel(data= airports, aes(label = NAMN1, x = X, y = Y), col = "firebrick4")
+```
+
+---
+```{r map5, warning = F, message=F, cache = T, fig.height=5, fig.width=5, fig.align='center'}
+ggmap(get_googlemap(center = c(lon = -7.833, lat = 53.333),
+                     zoom = 7, scale = 2,
+                     maptype ='roadmap',
+                     color = 'bw')) +
+  stat_density2d(aes(x = Long, y = Lat, fill = ..level..),
+                 alpha = 0.1, size = 0.01, bins = 50, 
+                 data = schools, geom = "polygon") + 
+  guides(fill = F) +
+  labs(title = "Where are Schools in Ireland", caption = "@Data from NUIM")
+
+```
+
+
+
+---
+
+```{r map6, warning = F, message=F, cache = T, fig.height=5, fig.width=5, fig.align='center'}
+data("domestic_violence")
+ggplot(domestic_violence, aes(fill = Scaled)) +
+    geom_sf() +
+    scale_fill_continuous(low = "#fff7ec", high = "#7F0000") + 
+    blank() +
+    north(domestic_violence) +
+    scalebar(domestic_violence, dist = 4, dist_unit = "km",
+             transform = TRUE, model = "WGS84")
+```
+
+---
+
+## Maps Layout of Plots - geofacet
+
+```{r geofacet, message=F, warning=F, echo=T, cache=T, fig.height=5}
+load("/home/eugene/Downloads/eu_gdp.rda")
+ggplot(eu_gdp, aes(year, gdp_pc)) +
+  geom_line(color = "steelblue") +
+  facet_geo(~ name, grid = "eu_grid1", scales = "free_y") +
+  scale_x_continuous(labels = function(x) paste0("'", substr(x, 3, 4))) +
+  ylab("GDP Per Capita in Relation to EU Index (100)") +
+  theme_bw()
+```
+
+---
+
+## Maps Layout of Plots - geofacet
+
+```{r ireland_grid, echo = F, message=F, warning=F, cache=TRUE}
+url <- "https://en.wikipedia.org/wiki/List_of_Irish_counties_by_population"
+w <- read_html(url)
+pathway_data_html <- html_nodes(w, ".headerSort , td")
+ev <- html_text(pathway_data_html)
+ev <- ev %>% 
+  gsub(pattern = "%", replacement = "") %>% 
+  gsub(pattern = ",", replacement = "") %>% 
+  gsub(pattern = "\\\n", replacement = "") %>% 
+  gsub(pattern = "–", replacement = "-")
+number <- ev[c(T, F, F, F, F, F)]
+county <- ev[c(F, T, F, F, F, F)]
+population <- ev[c(F, F, T, F, F, F)]
+density <- ev[c(F, F, F, T, F, F)]
+province <- ev[c(F, F, F, F, T, F)]
+change <- ev[c(F, F, F, F, F, T)]
+irish_counties <- data_frame(county = county, 
+                  population = as.numeric(population), 
+                  province = province, 
+                  density = as.numeric(density), 
+                  change = as.numeric(change))
+
+irish_counties <- irish_counties[-c(5, 6, 10),]
+irish_counties$county[6] <- "Derry"
+
+ireland_grid <- read_csv("/home/eugene/Desktop/Academic/Research/R_Fun/Irish_counties/ireland.csv")
+
+irish_counties %>% ggplot(aes(1, change, fill = province)) +
+  geom_col() +
+  facet_geo(~county, grid = ireland_grid) +
+  theme(axis.text.x = element_blank(),
+        panel.background = element_rect(fill = "darkgreen"),
+        panel.grid = element_blank()) +
+  scale_fill_manual(values = c("lightgreen", "blue", "red", "white")) +
+  guides(fill = F) +
+  labs(title = "Population Growth in Ireland by County",
+       caption = "@Data wikipedia")
+```
+
+
+---
+
+## Interactive Maps with leaflet()
+
+```{r leaflet, warning = F, message=F, echo=F, fig.align='center', fig.height = 6, fig.width = 10, cache = F, eval=T}
+meteors <- read_csv("/home/eugene/Desktop/Academic/Research/Blogs/Meteorites/Meteorite_Landings.csv")
+
+names(meteors)[5] <- "mass_g"
+
+meteors <- meteors %>% 
+  mutate(year=year(dmy_hms(year))) %>% 
+  mutate(kg=mass_g/1000) %>% 
+  na.omit %>% 
+  filter(kg > 10)
+
+pal <- colorNumeric("Reds", 
+                    domain=(meteors %>% 
+                              filter(year>1780))$year)
+
+magnification <- 10000
+
+map <- meteors %>% 
+  filter(year > 1800) %>% 
+  leaflet() %>% 
+  addProviderTiles(provider = "Esri") %>% 
+  setView(lng=-5, lat=50, zoom=2) 
+
+map %>% 
+  addCircles(lat=~reclat,
+             lng=~reclong,
+             popup = ~paste(name,"<br>",  
+                            "Mass", kg, "kg", "<br>",
+                            "Year", year),
+             color = ~pal(year),
+             radius=~(((kg)^0.25)*magnification))
+```
+
+---
+
+## Cartograms
+
+- Distort Size (and Shape) to Correspond to some Variable
+- Map of US income where each state has an area proportional to its population
+
+```{r cartogram, echo=F, fig.align='center', fig.height = 6, fig.width = 6, cache = T}
+load("/home/eugene/Downloads/US_income.rda")
+load("/home/eugene/Downloads/US_income_cartogram.rda")
+
+US_income <- mutate(
+  US_income,
+  income_bins = cut(
+      ifelse(is.na(median_income), 25000, median_income), # hide missing value
+      breaks = c(0, 40000, 50000, 60000, 70000, 80000),
+      labels = c("< $40k", "$40k to $50k", "$50k to $60k", "$60k to $70k", "> $70k"),
+      right = FALSE
+    )
+  )
+US_income_cartogram$income_bins <- US_income$income_bins
+
+US_income_cartogram$income_bins <- US_income$income_bins
+p <- ggplot(US_income_cartogram, aes(fill = income_bins)) + 
+  geom_sf(color = "grey30", size = 0.2) + coord_sf(datum = NA, expand = FALSE) +
+  scale_x_continuous(limits = c(-3900000, 2500000)) +
+  scale_fill_discrete_sequential(
+    h1 = -83, h2 = 20, c1 = 30, cmax = 40, c2 = 0, l1 = 20, l2 = 100, p1 = 1, p2 = 1.2, rev = TRUE, 
+    name = "median income",
+    nmax = 7,
+    order = 2:6,
+    guide = guide_legend(
+      override.aes = list(colour = "white", size = 1),
+      reverse = TRUE
+    )
+  ) +
+  theme(
+    plot.background = element_rect(fill = "cornsilk"),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.spacing.x = grid::unit(3, "pt"),
+    legend.spacing.y = grid::unit(3, "pt"),
+    legend.title = element_text(hjust = 0.5),
+    legend.key.width = grid::unit(18, "pt"),
+    legend.key.height = grid::unit(15, "pt"),
+    plot.margin = margin(3, 3, 3, 1.5)
+  )
+p
+
+```
+
+
+---
+
+## Mercator
+```{r mercator, echo=F, fig.align='center', fig.height = 6, fig.width = 6, cache = T}
+world_sf <- sf::st_as_sf(rworldmap::getMap(resolution = "low"))
+
+crs_longlat <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+crs_mercator <- "+proj=merc"
+# calculate bounding box in transformed coordinates
+mercator_bbox <- 
+  rbind(c(-180, -85), c(180, 85)) %>%
+  st_multipoint() %>%
+  st_sfc(
+    crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  ) %>% 
+  st_transform(crs = crs_mercator)
+ggplot(world_sf) + 
+  geom_sf(fill = "#E69F00B0", color = "black", size = 0.5/.pt) + 
+  scale_x_continuous(name = "longitude", breaks = seq(-120, 120, by = 60)) +
+  scale_y_continuous(name = "latitude", breaks = seq(-80, 80, by = 20)) +
+  coord_sf(
+    xlim = mercator_bbox[[1]][, 1],
+    ylim = mercator_bbox[[1]][, 2],
+    expand = FALSE,
+    crs = crs_mercator
+  ) + 
+  theme(
+    panel.background = element_rect(fill = "#56B4E950", color = "#56B4E950"),
+    panel.grid.major = element_line(color = "gray30", size = 0.25),
+    axis.ticks = element_line(color = "gray30", size = 0.5/.pt)
+  )
+
+```
+
+---
+
+## Mollweide
+
+```{r mollweide, echo=F, fig.align='center', fig.height = 10, fig.width = 10, cache = T}
+world_mol <- st_transform(world_sf, crs = "+proj=moll")
+
+mol_bbox <- 
+  rbind(c(-180, -85), c(180, 85)) %>%
+  st_multipoint() %>%
+  st_sfc(
+    crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  ) %>% 
+  st_transform(crs = "+proj=moll")
+```
+
+```{r mercator_plot, message=F, warning=F, echo=F, cache=T}
+ggplot(world_mol) + 
+  geom_sf(fill = "#E69F00B0", color = "black", size = 0.5/.pt) + 
+  geom_sf(data = mol_bbox, fill = NA, color = "grey30", size = 0.5/.pt) +
+  scale_x_continuous(name = "longitude", breaks = seq(-120, 120, by = 60)) +
+  scale_y_continuous(name = "latitude", breaks = seq(-80, 80, by = 20)) +
+  theme(
+    panel.background = element_rect(fill = "#56B4E950", color = "#56B4E950"),
+    panel.grid.major = element_line(color = "gray30", size = 0.25),
+    axis.ticks = element_line(color = "gray30", size = 0.5/.pt)
+  )
+```
+---
+
+##Interrupted Goode Homolosine
+
+```{r interrupted_goode_homolosine, echo=F, fig.align='center', fig.height = 10, fig.width = 10, cache = T}
+## Interrupted Goode homolosine
+crs_goode <- "+proj=igh"
+# projection outline in long-lat coordinates
+lats <- c(
+  90:-90, # right side down
+  -90:0, 0:-90, # third cut bottom
+  -90:0, 0:-90, # second cut bottom
+  -90:0, 0:-90, # first cut bottom
+  -90:90, # left side up
+  90:0, 0:90, # cut top
+  90 # close
+)
+longs <- c(
+  rep(180, 181), # right side down
+  rep(c(80.01, 79.99), each = 91), # third cut bottom
+  rep(c(-19.99, -20.01), each = 91), # second cut bottom
+  rep(c(-99.99, -100.01), each = 91), # first cut bottom
+  rep(-180, 181), # left side up
+  rep(c(-40.01, -39.99), each = 91), # cut top
+  180 # close
+)
+goode_outline <- 
+  list(cbind(longs, lats)) %>%
+  st_polygon() %>%
+  st_sfc(
+    crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  ) %>% 
+  st_transform(crs = crs_goode)
+# bounding box in transformed coordinates
+xlim_goode <- c(-21945470, 21963330)
+ylim_goode <- c(-9538022, 9266738)
+goode_bbox <- 
+  list(
+    cbind(
+      c(xlim_goode[1], xlim_goode[2], xlim_goode[2], xlim_goode[1], xlim_goode[1]), 
+      c(ylim_goode[1], ylim_goode[1], ylim_goode[2], ylim_goode[2], ylim_goode[1])
+    )
+  ) %>%
+  st_polygon() %>%
+  st_sfc(crs = crs_goode)
+# area outside the earth outline
+goode_without <- st_difference(goode_bbox, goode_outline)
+```
+
+```{r goode_plot, message=F, warning=F, echo=F, cache=T}
+ggplot(world_sf) + 
+  geom_sf(fill = "#E69F00B0", color = "black", size = 0.5/.pt) +
+  geom_sf(data = goode_without, fill = "white", color = NA) +
+  geom_sf(data = goode_outline, fill = NA, color = "grey30", size = 0.5/.pt) +
+  scale_x_continuous(name = NULL, breaks = seq(-160, 160, by = 20)) +
+  scale_y_continuous(name = NULL, breaks = seq(-80, 80, by = 20)) + 
+  coord_sf(xlim = 0.95*xlim_goode, ylim = 0.95*ylim_goode, expand = FALSE, crs = crs_goode, ndiscr = 1000) + 
+  theme(
+    panel.background = element_rect(fill = "#56B4E950", color = "white", size = 1),
+    panel.grid.major = element_line(color = "gray30", size = 0.25),
+    plot.margin = margin(1.5, 1.5, 24, 1.5)
+  )
+```
+
+
+---
+
+## Packages for Drawing Maps
+
+- lots of packages ('cus lots of people interested)
+- *ggmap*
+    - useful for drawing maps with layers
+- *leaflet*
+    -useful for interactive maps
+- *tmap*
+    - useful for both, this is the one to use
+    - see [vignette](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html) for instructions
+    
+---
+
+## Types of Maps
+
+- Two main categories
+    - shapefiles
+    - rasters
+- shapefiles are composed of geometical objects of points, lines or polygons
+- rasters are arrays of pixels essentially
+- we've used shapefiles here
+    - new format called *sf* replacing *sp*
+    
+---
+
+## Some Libraries for Maps
+
+- the ones mentioned above, *ggmap*, *leaflet*, and *tmap*
+- *sf* for layers like *geom_sf()*
+- *sp* still useful for legacy reasons
+- *spData* has lots of shapefiles
+- *rworldmap*, likewise
+
+---
+
+## Some Libraries for Maps
+
+- *rnaturalearth*
+- *rnoaa* for weather data
+- *RgoogleMaps* is the gateway to all the maps.google stuff
+    - but you have to register now to get all this
+- *usmap*, kind of what it suggests
+- *albersusa*, shapefile projection of the US
+- can also google __shapefile__ plus some area to see what you get
+- *osmdata* gives access to open street map data
+    
+---
+
+## More Involved Packages
+
+- *RQGIS* is an R interface for a _Graphical Information System_
+- *spatstat* is for spatial statistics
+    - clustering, correlations, point pattern analysis, kriging, etc
+    - one of the largest libraries in all of R
+- *RSAGA* for geoprocessing and terrain analysis
+- *SPADAR* for astronomical mapping
+
+
+---
+## Some Nice Add on Libraries
+
+- *ggsn*, we used this to get a scale bar and compass for Sao Paolo
+- *ggspatial* likewise
+- *geofacet* for the European GDP plot
+- *ggrepel* for nice labelling in plots
+
+---
+
+## Some Resources
+
+- book by [Wilke](https://serialmentor.com/dataviz/) has a chapter on maps
+    - several of maps above taken from [here](https://github.com/clauswilke/dataviz/blob/master/geospatial_data.Rmd)
+- article by [littlemissdata](https://www.littlemissdata.com/blog/ggmap-updated) uses *ggmap*
+    - also includes instructions to register to access *get_googlemap()*
+- online book on [Geocomputation with R](https://geocompr.robinlovelace.net/)
+- list of [Coordinate Reference Systems](https://spatialreference.org/)
+- article on using [Open Street Map Data](https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/)
+- tutorial from the [University of Chicago](https://spatialanalysis.github.io/)
+
+---
+
+```{r my_code, ref.label=knitr::all_labels(), eval=F}
+
+```
+
+

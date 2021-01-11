@@ -1,0 +1,284 @@
+---
+title: "Data Wrangling - dplyr"
+author: "Eugene"
+date: "`r format(Sys.Date(), '%B %d %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [TUD01, TUD02, tamu-fonts]
+
+header-includes:
+- \usepackage{multicol}
+- \newcommand{\btwocol}{\begin{multicols}{2}}
+- \newcommand{\etwocol}{\end{multicols}}
+---
+
+class: center, inverse
+
+# Manipulating Dataframes with _dplyr_
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+---
+
+## _dplyr_ Six Verbs - and how to combine them
+
+<ol>
+<li> filter
+<li> select
+<li> mutate
+<li> arrange
+<li> group_by
+<li> summarise (or summarize)
+<li> and, of course, the pipe _%>%_ 
+---
+
+## filter
+
+- used to choose some rows from a dataframe
+- pass in the dataframe and some logical condition
+    - could be _==_ (note the double equals), for characters and _<_, _>_ for numerics
+    - also _<=_, _>=_, _!_ (for NOT)
+    - can use _between()_
+    - I like _%in%_
+- can have multiple logical conditions in the same filter
+
+```{r libraries, message=F, warning=F, echo=FALSE}
+library(tidyverse)
+library(gapminder)
+library(knitr)
+library(kableExtra)
+```
+
+---
+
+.pull-left[
+<br>
+<br>
+<br>
+<br>
+
+```{r filter_example}
+# you'll need the libraries: tidyverse, gapminder, and knitr
+gapminder %>% 
+  filter(continent == "Africa", 
+         between(pop, 20e6, 50e6), 
+         year %in% c(1952:1964)) %>% 
+  kable()
+```
+
+]
+.pull-right[
+![@Allison_Horst](images/dplyr_filter.jpg)
+]
+
+---
+
+## select
+
+- used to pick out columns from a dataframe
+- pass in the dataframe and one or more columns
+    - can _deselect_ columns with a minus sign
+
+
+.pull-left[
+
+```{r select1_example}
+gapminder %>% 
+  select(country, year, lifeExp) %>% 
+  head() %>% 
+  kable()
+```
+
+]
+
+.pull-right[
+
+```{r select2_example}
+gapminder %>% 
+  select(-c(continent, pop)) %>% 
+  head() %>% kable()
+```
+
+]
+
+---
+
+.pull-left[
+
+## mutate
+
+- makes new columns
+- same number of rows
+- pass in dataframe and instructions
+]
+
+.pull-right[
+![@Allison_Horst](images/dplyr_mutate.png)
+
+]
+
+```{r mutate_example}
+gapminder %>% 
+  mutate(total_gdp_billions = pop * gdpPercap / 1e9) %>% 
+  head() %>% kable()
+```
+
+---
+
+## arrange
+
+- used to order columns
+    - normally increasing, use _desc()_ to reverse
+    
+.pull-left[
+
+```{r arrange1_example}
+gapminder %>% 
+  select(country, year, pop) %>% 
+  arrange(pop) %>% 
+  head() %>% kable()
+```
+
+]
+.pull-right[
+
+```{r arrange2_example}
+gapminder %>% 
+  select(country, year, pop) %>% 
+  arrange(desc(pop)) %>% 
+  head() %>% kable()
+```
+
+]
+---
+
+## group_by and summarise
+
+- always(ish) go hand in hand
+- _group_by()_ reduces number of rows
+- _summarise()_ makes new columns
+- always use _ungroup()_ when you're finished
+
+<center>
+
+<img src = "images/group_by_ungroup.png" alt="@Allison_Horst" width="300" height="200"/>
+
+</center>
+
+---
+
+```{r group_by_example, fig.height=4, fig.width=8}
+gapminder %>% 
+  group_by(continent, year) %>% 
+  summarise(mean_lifeExp = mean(lifeExp)) %>% ungroup() %>% 
+  ggplot(aes(year, mean_lifeExp, col = continent)) + 
+  geom_line() + geom_point()
+```
+
+---
+
+## The Pipe - %>% 
+
+- neat feature, takes a bit of getting used to 
+- but makes life way simpler and code more readable
+- chains operations together
+- read it in your head as _"and then..."_
+- alternatives are, well, ugly. And unforgiving.
+
+---
+
+## The Pipe - %>% continued
+
+- we've used it extensively so far, and can go even further
+- basic idea is that you send the output from one line into the first (unnamed) argument of the next
+- keyboard shortcut, one worth knowing, is Ctrl + Shift + M
+- if you're really interested, other pipes such as the T-pipe(%T%) and the dollar pipe (%$%)
+
+---
+
+## a bit more dplyr
+
+- the function _distinct()_
+    - gets rid of duplicate rows
+- the function _rename()_ changes names of columns
+- the function _relocate()_ changes order of columns
+- and _left_join()_ links dataframes together (a.k.a. SQL)
+
+---
+
+class: center, inverse
+
+# Wide and Long Dataframe Formats
+
+---
+
+## Tidy Data (the _tidyr_ package)
+
+- idea of tidy data
+    - each variable must have it's own column
+    - each observation it's own row
+    - each value it's own cell
+
+```{r pivot1}
+iris %>% 
+  pivot_longer(cols = -Species, names_to = "Parameter", values_to = "Measurement") %>%
+  head() %>% knitr::kable()
+```
+
+---
+
+![@Allison_Horst](images/tidydata_1.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_1.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_1.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_2.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_3.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_4.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_5.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_6.jpg)
+
+---
+
+![@Allison_Horst](images/tidydata_7.jpg)
+
+---
+
+```{r pivot2}
+gapminder %>% select(country, year, lifeExp) %>% 
+  pivot_wider(names_from = "year", values_from = "lifeExp") %>% 
+  head(15) %>% kable()
+```
+
+

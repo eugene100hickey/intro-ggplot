@@ -1,0 +1,433 @@
+---
+title: "NHS Workshop<br>Introduction to ggplot"
+subtitle: "Mechanics of ggplot"
+session: "11:00-12:00"
+author: "Eugene Hickey"
+institute: "Technological University Dublin"
+date: "January 21st 2021"
+output:
+  xaringan::moon_reader:
+    css: 
+      - default
+      - css/mytheme.css
+      - css/mytheme-fonts.css
+    lib_dir: libs
+    seal: false
+    self_contained: true
+    nature:
+      highlightStyle: googlecode
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      beforeInit: "macros.js"
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+
+```{r meta, echo=FALSE, message=FALSE, warning=FALSE}
+library(metathis)
+meta() %>%
+  meta_general(
+    description = "An Introduction ggplot",
+    generator = "xaringan and remark.js"
+  ) %>% 
+  meta_name("github-repo" = "eugene100hickey/ggplot-intro") %>% 
+  meta_social(
+    title = "Introduction to ggplot",
+    url = "https://into-ggplot-nhsr.netlify.app",
+    image = "https://github.com/eugene100hickey/blob/main/ice.JPG",
+    image_alt = "Front page for Introduction to ggplot",
+    og_type = "website",
+    og_author = "Eugene Hickey",
+    twitter_card_type = "summary_large_image",
+    twitter_creator = "@eugene100hickey"
+  )
+```
+
+
+
+
+```{r setup, include = FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+library(scales)
+library(gapminder)
+library(ggrepel)
+library(glue)
+library(waffle)
+library(treemapify)
+library(ggridges)
+library(lubridate)
+library(boxoffice)
+library(knitr)
+library(xaringanExtra)
+library(nhsrtheme)
+library(NHSRdatasets)
+library(flipbookr)
+library(factoextra)
+library(ggtext)
+library(hrbrthemes)
+# set default options
+opts_chunk$set(echo=FALSE,
+               collapse = TRUE,
+               # fig.width = 7.252,
+               # fig.height = 4,
+               dpi = 300,
+               cache = TRUE,
+               message = FALSE,
+               warning = FALSE)
+
+xaringanExtra::use_tile_view()
+xaringanExtra::use_panelset()
+xaringanExtra::use_clipboard()
+xaringanExtra::use_webcam()
+xaringanExtra::use_broadcast()
+xaringanExtra::use_share_again()
+xaringanExtra::style_share_again(
+  share_buttons = c("twitter", "linkedin", "pocket")
+)
+
+```
+
+```{r theme, cache = F}
+
+my_colour = "firebrick4"
+ggplot2::theme_set(ggplot2::theme_minimal())
+ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free", 
+                                 size = 20, 
+                                 colour = my_colour),
+             axis.text = ggplot2::element_text(colour = my_colour),
+             rect = element_rect(colour = my_colour),
+             line = element_line(colour = my_colour))
+caption = "@DataVis_2020 Eugene"
+
+my_ordinal_date <- function(dates){
+     dayy <- day(dates)
+     suff <- case_when(dayy %in% c(11,12,13) ~ "th",
+                       dayy %% 10 == 1 ~ 'st',
+                       dayy %% 10 == 2 ~ 'nd',
+                       dayy %% 10 == 3 ~'rd',
+                       TRUE ~ "th")
+     paste0(dayy, suff)
+ }
+
+```
+
+class: title-slide, right, top
+background-image: url(img/ice.JPG)
+background-position: 90% 75%, 75% 75%
+background-size:cover
+
+.left-column[
+# `r rmarkdown::metadata$title`
+] 
+
+.right-column[
+### `r rmarkdown::metadata$subtitle`
+
+**`r rmarkdown::metadata$author`**<br>
+`r rmarkdown::metadata$date`
+]
+
+
+.palegrey[.left[.footnote[Graphic by [Elaine Hickey](https://photos.google.com/photo/AF1QipMjKNoaxyne8nte4HmxA6Th9-4fUfSbl_mx-_1G)]]]
+
+???
+
+Welcome to the workshop on ggplot.
+
+Where we'll show you how to create impressive data visualisations.
+
+---
+
+
+# Basic Picture of ggplot
+
+- aesthetics
+    - values that each individual observation (row) has
+    - will be different for each observation
+- atrributes
+    - values that are shared between all points
+    - decide to make everything mint green
+- layers
+    - each visualisation is built sequentially
+    - add features in layers, one on top of the last
+    - examples: add a plot title, change an axis scale....
+    
+---
+
+```{r ggplot-example, echo = F, message = F, warning = F, cache = T, fig.height=6, include = F}
+
+who %>% 
+  filter(iso3 == "IRL") %>% 
+  select(year, new_sp_f65, new_sp_m65) %>% 
+  drop_na() %>% 
+  pivot_longer(cols = -year, names_to = "Gender", values_to = "Incidence") %>% 
+  ggplot(aes(x = year, y = Incidence, col = Gender)) + 
+  geom_point() +
+  geom_smooth(se = F) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + 
+  labs(subtitle = "Incidence of Tuberculosis in Ireland",
+       title = "<span style = 'color: red;'>Women</span> and 
+       <span style = 'color: blue;'>Men</span>",
+       caption = "@Data from WHO") +
+  theme(plot.title = element_markdown()) +
+  theme(text = element_text(family = "Ink Free", size = 24),
+        axis.title = element_text(family = "Ink Free", size = 24, face = "bold"))
+```
+
+`r chunk_reveal("ggplot-example")`
+
+---
+
+
+# Picturing Data Different Ways with ggplot
+
+### We're going to set out some of the options for looking at data
+
+### these depend on what kind of data you have
+
+### and what you want to investigate
+
+Lots of these come from [Top 50 Visualizations in R](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#5.%20Composition)
+
+
+
+---
+
+<ol>
+<li> Visualising Amounts
+<li> Visualising Proportions
+<li><span style="color: red;"> Visualising Distributions </span>
+<li><span style="color: red;"> Visualising Relationships </span>
+<li><span style="color: blue;"> Visualising Time Series </span>
+<li><span style="color: blue;"> Visualising Groups </span>
+<li><span style="color: blue;"> Visualising Networks </span>
+<li><span style="color: blue;"> Visualising Spatial Data </span>
+
+Items in <span style="color: red;">red</span> we'll cover this afternoon. In <span style="color: blue;">blue</span> will have to wait for a future workshop.
+
+---
+class: inverse
+
+# Visualising Amounts
+
+- barplot
+- dot plot
+- lollipop plot
+
+
+
+---
+
+
+```{r data, cache = T}
+boxoffice_date <- Sys.Date()-7
+movies <- boxoffice(boxoffice_date) %>% 
+  mutate(gross = gross / 1e3,
+         movie_name = movie,
+         movie = abbreviate(movie))
+
+```
+
+
+```{r barplot, eval=FALSE, echo=T}
+diamonds %>% 
+  ggplot(aes(cut)) + 
+  geom_bar(fill = "firebrick4", alpha = 0.6) + 
+  labs(caption = "@Data tidyverse")
+```
+
+`r chunk_reveal("barplot")`]
+
+
+---
+
+
+```{r barplot2, eval=FALSE, echo = T}
+diamonds %>% 
+  ggplot(aes(cut)) + 
+  geom_bar(fill = "firebrick4") + 
+  ggtitle("Proportion of Cuts of Diamonds") + 
+  labs(caption = "@Data tidyverse") +
+  coord_flip() +
+  theme(axis.text.x = element_blank()) + 
+  theme(axis.title = element_blank()) + 
+  theme(title = element_text(face = "bold"))
+```
+
+`r chunk_reveal("barplot2")`
+
+---
+
+
+```{r box-office, eval=FALSE, echo = T}
+boxoffice_date_string <- glue::glue("{my_ordinal_date(boxoffice_date)}, {month(boxoffice_date, label = T, abbr = F)}, {year(boxoffice_date)}")
+movies %>% mutate(movie = fct_reorder(movie, gross)) %>% 
+  slice_head(n=10) %>% 
+  ggplot(aes(movie, gross)) + 
+  geom_col(fill = "firebrick4") + 
+  scale_y_continuous(breaks = scales::breaks_extended(8), 
+                     labels = scales::label_dollar(scale = 1)) + 
+  labs(title = glue::glue("Box Office for {boxoffice_date_string}"),
+       caption = "@Data from BoxOfficeMojo",
+       y = "Gross ($k)") +
+  coord_flip()
+```
+
+`r chunk_reveal("box-office")`
+
+---
+
+
+```{r colplot-gapminder, eval=FALSE, echo = T}
+dslabs::gapminder %>% 
+  filter(year == "2007") %>% 
+  group_by(continent) %>% 
+  summarise(life_exp_2007 = mean(life_expectancy)) %>%
+  ggplot(aes(continent, life_exp_2007)) + 
+  coord_flip() +
+  labs(caption = "@Data Gapminder (WHO)") +
+  geom_col() + #ROTATE
+  geom_point(colour = "firebrick4", size = 4) + #ROTATE
+  geom_segment(aes(x = continent, 
+                   xend = continent, 
+                   y = 0, 
+                   yend = life_exp_2007),
+               size = 2, 
+               colour = "firebrick4")
+```
+
+`r chunk_reveal("colplot-gapminder")`
+
+---
+
+```{r dotplot-gapminder, eval=FALSE, echo = T}
+dslabs::gapminder %>% 
+  filter(year == "2007") %>% 
+  group_by(continent) %>% 
+  summarise(life_exp_2007 = mean(life_expectancy)) %>%
+  ggplot(aes(continent, life_exp_2007)) + 
+  geom_point(colour = "firebrick4", size = 4) + 
+  coord_flip() +
+  labs(caption = "@Data Gapminder (WHO)")  +
+  geom_segment(aes(x = continent, 
+                   xend = continent, 
+                   y = 0, 
+                   yend = life_exp_2007),
+               size = 2, 
+               colour = "firebrick4")
+```
+
+`r chunk_reveal("dotplot-gapminder")`
+
+---
+
+
+```{r lollypop-gapminder, eval=FALSE, echo = T}
+dslabs::gapminder %>% 
+  filter(year == "2007") %>% 
+  group_by(continent) %>% 
+  summarise(life_exp_2007 = mean(life_expectancy)) %>%
+  mutate(continent = fct_reorder(continent, life_exp_2007)) %>% 
+  ggplot(aes(continent, life_exp_2007)) + 
+  geom_point(colour = "firebrick4", size = 10) + 
+  geom_segment(aes(x = continent, xend = continent, y = 0, yend = life_exp_2007),
+               size = 2, colour = "firebrick4") +
+  coord_flip() +
+  labs(caption = "@Data Gapminder (WHO)")
+```
+
+`r chunk_reveal("lollypop-gapminder")`
+
+---
+class: inverse
+
+## Summary of Amounts
+
+- have categorical variable and a count / quantity
+- geom_bar() does a count, does some processing for you
+- geom_col() when you have quantities already
+- dot plot with geom_point() doesn't have to include origin
+- lollypop same as geom_col() but with less ink. Uses geom_point() and geom_segment()
+- coord_flip() useful, especially when text labels are long
+- important to get order of categorical variable right, fct_reorder() useful
+
+---
+
+class: inverse
+
+# Visualising Proportions
+
+- stacked barplot
+- pie chart
+- waffle plot
+ 
+---
+
+```{r pie-gapminder, eval=FALSE, echo = T}
+dslabs::gapminder %>%
+  filter(year == "2007") %>%
+  mutate(population = round(population / 1e6, 0)) %>%
+  group_by(continent) %>%
+  summarise(population = sum(population)) %>%
+  mutate(continent = fct_reorder(continent, population)) %>%
+  ggplot(aes(1, population, fill = continent)) +
+    geom_col(position = "stack", show.legend = F) +
+    ylab("Population (Millions)") + 
+    geom_text_repel(aes(label = glue("{continent}: {population}M")),  
+              position = position_stack(vjust = .5), 
+              size = 6) +
+    theme_void() +
+    coord_polar(theta = "y")
+```
+
+`r chunk_reveal("pie-gapminder")`
+
+---
+
+
+```{r waffle, eval=FALSE, echo = T}
+dslabs::gapminder %>%
+  filter(year == "2007") %>%
+  mutate(population = population / 1e3) %>%
+  group_by(continent) %>%
+  summarise(population = (sum(population) / 1e5) %>% ceiling()) %>%
+  mutate(continent = fct_reorder(continent, population)) %>% pull(population) %>%
+  waffle(rows = 5, legend_pos = "none")
+```
+
+`r chunk_reveal("waffle")`
+
+---
+
+
+```{r treemap, eval=FALSE, echo = T, cache = T}
+read_csv("data/cattle.csv") %>% 
+  ggplot(aes(area = herd, 
+             fill = province, 
+             label = county)) + 
+    geom_treemap() + 
+    geom_treemap_text(fontface = "italic", 
+                      colour = "white", 
+                      place = "centre", 
+                      grow = T) +
+  labs(caption = "@Data from eurostat and IBGF")
+```
+
+
+`r chunk_reveal("treemap")`
+
+---
+class: inverse
+
+## Summary of Proportions
+
+- have categorical variable and a count / quantity
+- want to know relative amounts of each
+- options are stacked bars, pie, waffle, treemap
+- I'm not a huge fan of any of these
