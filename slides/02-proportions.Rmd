@@ -92,28 +92,8 @@ xaringanExtra::style_share_again(
 
 ```
 
-```{r theme, cache = F}
-
-my_colour = "firebrick4"
-ggplot2::theme_set(ggplot2::theme_minimal())
-ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free", 
-                                 size = 20, 
-                                 colour = my_colour),
-             axis.text = ggplot2::element_text(colour = my_colour),
-             rect = element_rect(colour = my_colour),
-             line = element_line(colour = my_colour))
-caption = "@DataVis_2020 Eugene"
-
-my_ordinal_date <- function(dates){
-     dayy <- day(dates)
-     suff <- case_when(dayy %in% c(11,12,13) ~ "th",
-                       dayy %% 10 == 1 ~ 'st',
-                       dayy %% 10 == 2 ~ 'nd',
-                       dayy %% 10 == 3 ~'rd',
-                       TRUE ~ "th")
-     paste0(dayy, suff)
- }
-
+```{r ink-free, cache = F}
+sysfonts::font_add("Ink Free", regular = "C:\\Windows\\Fonts\\Inkfree.ttf")
 ```
 
 class: title-slide, right, top
@@ -161,28 +141,53 @@ Where we'll show you how to create impressive data visualisations.
 
 ```{r ggplot-example, echo = F, message = F, warning = F, cache = T, fig.height=6, include = F}
 
-who %>% 
-  filter(iso3 == "IRL") %>% 
-  select(year, new_sp_f65, new_sp_m65) %>% 
-  drop_na() %>% 
-  pivot_longer(cols = -year, names_to = "Gender", values_to = "Incidence") %>% 
-  ggplot(aes(x = year, y = Incidence, col = Gender)) + 
-  geom_point() +
-  geom_smooth(se = F) + 
+palmerpenguins::penguins %>% drop_na() %>% 
+  ggplot() +
+  aes(x = body_mass_g) +
+  aes(y = bill_length_mm) + 
+  geom_point(size = 3, show.legend = F) +
+  aes(colour = species) +
+  scale_color_manual(values = c("black", "blue", "grey70")) +
+  ggalt::geom_encircle(size = 5, show.legend = FALSE) +
+  labs(title = "Bill Length versus Body Mass",
+       subtitle = "for <span style = 'color:black;'>Adelie</span>, <span style = 'color:blue;'>Chinstrap</span>, and <span style = 'color:#B0B0B0;'>Gentoo</span> penguins",
+       x = "Body Mass (g)",
+       y = "Bill Length (mm)",
+       caption = "@Data from Palmer Penguins") +
   theme_minimal() + 
-  theme(legend.position = "none") + 
-  labs(subtitle = "Incidence of Tuberculosis in Ireland",
-       title = "<span style = 'color: red;'>Women</span> and 
-       <span style = 'color: blue;'>Men</span>",
-       caption = "@Data from WHO") +
-  theme(plot.title = element_markdown()) +
-  theme(text = element_text(family = "Ink Free", size = 24),
-        axis.title = element_text(family = "Ink Free", size = 24, face = "bold"))
+  theme(text = element_text(family = "Ink Free", size = 18)) +
+  theme(plot.subtitle = element_markdown(size = 24)) + 
+  facet_grid(~sex)
+
 ```
 
 `r chunk_reveal("ggplot-example")`
 
 ---
+
+
+```{r theme, cache = F}
+
+my_colour = "firebrick4"
+ggplot2::theme_set(ggplot2::theme_minimal())
+ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free", 
+                                 size = 20, 
+                                 colour = my_colour),
+             axis.text = ggplot2::element_text(colour = my_colour),
+             rect = element_rect(colour = my_colour),
+             line = element_line(colour = my_colour))
+caption = "@DataVis_2020 Eugene"
+
+my_ordinal_date <- function(dates){
+     dayy <- day(dates)
+     suff <- case_when(dayy %in% c(11,12,13) ~ "th",
+                       dayy %% 10 == 1 ~ 'st',
+                       dayy %% 10 == 2 ~ 'nd',
+                       dayy %% 10 == 3 ~'rd',
+                       TRUE ~ "th")
+     paste0(dayy, suff)
+ }
+```
 
 
 # Picturing Data Different Ways with ggplot
@@ -235,7 +240,7 @@ movies <- boxoffice(boxoffice_date) %>%
 ```
 
 
-```{r barplot, eval=FALSE, echo=T}
+```{r barplot, eval=FALSE, echo=F, include=F}
 diamonds %>% 
   ggplot(aes(cut)) + 
   geom_bar(fill = "firebrick4", alpha = 0.6) + 
@@ -244,11 +249,11 @@ diamonds %>%
 
 `r chunk_reveal("barplot")`]
 
-
+echo = F, message = F, warning = F, cache = T, fig.height=6, include = F
 ---
 
 
-```{r barplot2, eval=FALSE, echo = T}
+```{r barplot2, eval=FALSE, echo = T, include=F}
 diamonds %>% 
   ggplot(aes(cut)) + 
   geom_bar(fill = "firebrick4") + 
@@ -265,7 +270,7 @@ diamonds %>%
 ---
 
 
-```{r box-office, eval=FALSE, echo = T}
+```{r box-office, eval=FALSE, echo = T, include=F}
 boxoffice_date_string <- glue::glue("{my_ordinal_date(boxoffice_date)}, {month(boxoffice_date, label = T, abbr = F)}, {year(boxoffice_date)}")
 movies %>% mutate(movie = fct_reorder(movie, gross)) %>% 
   slice_head(n=10) %>% 
@@ -284,7 +289,7 @@ movies %>% mutate(movie = fct_reorder(movie, gross)) %>%
 ---
 
 
-```{r colplot-gapminder, eval=FALSE, echo = T}
+```{r colplot-gapminder, eval=FALSE, echo = T, include=F}
 dslabs::gapminder %>% 
   filter(year == "2007") %>% 
   group_by(continent) %>% 
@@ -302,11 +307,11 @@ dslabs::gapminder %>%
                colour = "firebrick4")
 ```
 
-`r chunk_reveal("colplot-gapminder")`
+`r chunk_reveal("colplot-gapminder", break_type = "rotate")`
 
 ---
 
-```{r dotplot-gapminder, eval=FALSE, echo = T}
+```{r dotplot-gapminder, eval=FALSE, echo = T, include=F}
 dslabs::gapminder %>% 
   filter(year == "2007") %>% 
   group_by(continent) %>% 
@@ -328,7 +333,7 @@ dslabs::gapminder %>%
 ---
 
 
-```{r lollypop-gapminder, eval=FALSE, echo = T}
+```{r lollypop-gapminder, eval=FALSE, echo = T, include=F}
 dslabs::gapminder %>% 
   filter(year == "2007") %>% 
   group_by(continent) %>% 
@@ -369,7 +374,7 @@ class: inverse
  
 ---
 
-```{r pie-gapminder, eval=FALSE, echo = T}
+```{r pie-gapminder, eval=FALSE, echo = T, include=F}
 dslabs::gapminder %>%
   filter(year == "2007") %>%
   mutate(population = round(population / 1e6, 0)) %>%
@@ -391,7 +396,7 @@ dslabs::gapminder %>%
 ---
 
 
-```{r waffle, eval=FALSE, echo = T}
+```{r waffle, eval=FALSE, echo = T, include=F}
 dslabs::gapminder %>%
   filter(year == "2007") %>%
   mutate(population = population / 1e3) %>%
@@ -406,7 +411,7 @@ dslabs::gapminder %>%
 ---
 
 
-```{r treemap, eval=FALSE, echo = T, cache = T}
+```{r treemap, eval=FALSE, echo = T, cache = T, include=F}
 read_csv("data/cattle.csv") %>% 
   ggplot(aes(area = herd, 
              fill = province, 

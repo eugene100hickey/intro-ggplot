@@ -14,7 +14,7 @@ navbar:
           href: "slides/01-why-ggplot.html"
         - text: "Morning 11:00-12:00: ggplot - Proportions"
           href: "slides/02-proportions.html"
-        - text: "Morning 12:00-13:00 ggplot - Distributions/Reltionships"
+        - text: "Morning 12:00-13:00 ggplot - Distributions/Relationships"
           href: "slides/03-distributions-relationships.html"
     - icon: fab fa-youtube
       href: "https://www.youtube.com/channel/UCMwM-3tg_-Pbx8hKO78q5EA"
