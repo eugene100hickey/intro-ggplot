@@ -94,10 +94,14 @@ xaringanExtra::style_share_again(
 
 ```{r ink-free, cache = F}
 sysfonts::font_add("Ink Free", regular = "C:\\Windows\\Fonts\\Inkfree.ttf")
+
+ggthemr::ggthemr("earth")
+
+ggthemr::ggthemr_reset()
 ```
 
 class: title-slide, right, top
-background-image: url(img/ice.JPG)
+background-image: url(img/ice.png)
 background-position: 90% 75%, 75% 75%
 background-size:cover
 
@@ -139,13 +143,19 @@ Where we'll show you how to create impressive data visualisations.
     
 ---
 
+```{r embed-quiz-aesthetics, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/aesthetics/", ratio = "16:9")
+```
+
+---
+
 ```{r ggplot-example, echo = F, message = F, warning = F, cache = T, fig.height=6, include = F}
 
 palmerpenguins::penguins %>% drop_na() %>% 
   ggplot() +
   aes(x = body_mass_g) +
   aes(y = bill_length_mm) + 
-  geom_point(size = 3, show.legend = F) +
+  geom_point(size = 3, show.legend = FALSE) +
   aes(colour = species) +
   scale_color_manual(values = c("black", "blue", "grey70")) +
   ggalt::geom_encircle(size = 5, show.legend = FALSE) +
@@ -155,7 +165,9 @@ palmerpenguins::penguins %>% drop_na() %>%
        y = "Bill Length (mm)",
        caption = "@Data from Palmer Penguins") +
   theme_minimal() + 
-  theme(text = element_text(family = "Ink Free", size = 18)) +
+  theme(text = element_text(family = "Ink Free", 
+                            size = 18,
+                            colour = "firebrick4")) +
   theme(plot.subtitle = element_markdown(size = 24)) + 
   facet_grid(~sex)
 
@@ -214,7 +226,7 @@ Lots of these come from [Top 50 Visualizations in R](http://r-statistics.co/Top5
 <li><span style="color: blue;"> Visualising Networks </span>
 <li><span style="color: blue;"> Visualising Spatial Data </span>
 
-Items in <span style="color: red;">red</span> we'll cover this afternoon. In <span style="color: blue;">blue</span> will have to wait for a future workshop.
+Items black we'll cover here, in <span style="color: red;">red</span> we'll cover this afternoon. In <span style="color: blue;">blue</span> will have to wait for a future workshop.
 
 ---
 class: inverse
@@ -273,18 +285,18 @@ diamonds %>%
 ```{r box-office, eval=FALSE, echo = T, include=F}
 boxoffice_date_string <- glue::glue("{my_ordinal_date(boxoffice_date)}, {month(boxoffice_date, label = T, abbr = F)}, {year(boxoffice_date)}")
 movies %>% mutate(movie = fct_reorder(movie, gross)) %>% 
-  slice_head(n=10) %>% 
-  ggplot(aes(movie, gross)) + 
-  geom_col(fill = "firebrick4") + 
+  slice_head(n=10) %>% #BREAK
+  ggplot(aes(movie, gross)) + #BREAK
+  geom_col(fill = "firebrick4") + #BREAK
   scale_y_continuous(breaks = scales::breaks_extended(8), 
-                     labels = scales::label_dollar(scale = 1)) + 
+                     labels = scales::label_dollar(scale = 1)) + #BREAK
   labs(title = glue::glue("Box Office for {boxoffice_date_string}"),
        caption = "@Data from BoxOfficeMojo",
-       y = "Gross ($k)") +
-  coord_flip()
+       y = "Gross ($k)") + #BREAK
+  coord_flip() #BREAK
 ```
 
-`r chunk_reveal("box-office")`
+`r chunk_reveal("box-office", break_type = "user")`
 
 ---
 
@@ -293,21 +305,14 @@ movies %>% mutate(movie = fct_reorder(movie, gross)) %>%
 dslabs::gapminder %>% 
   filter(year == "2007") %>% 
   group_by(continent) %>% 
-  summarise(life_exp_2007 = mean(life_expectancy)) %>%
+  summarise(life_exp_2007 = mean(life_expectancy)) %>% #BREAK
   ggplot(aes(continent, life_exp_2007)) + 
   coord_flip() +
   labs(caption = "@Data Gapminder (WHO)") +
-  geom_col() + #ROTATE
-  geom_point(colour = "firebrick4", size = 4) + #ROTATE
-  geom_segment(aes(x = continent, 
-                   xend = continent, 
-                   y = 0, 
-                   yend = life_exp_2007),
-               size = 2, 
-               colour = "firebrick4")
+  geom_col() #BREAK
 ```
 
-`r chunk_reveal("colplot-gapminder", break_type = "rotate")`
+`r chunk_reveal("colplot-gapminder", break_type = "user")`
 
 ---
 
@@ -315,20 +320,14 @@ dslabs::gapminder %>%
 dslabs::gapminder %>% 
   filter(year == "2007") %>% 
   group_by(continent) %>% 
-  summarise(life_exp_2007 = mean(life_expectancy)) %>%
+  summarise(life_exp_2007 = mean(life_expectancy)) %>% #BREAK
   ggplot(aes(continent, life_exp_2007)) + 
   geom_point(colour = "firebrick4", size = 4) + 
   coord_flip() +
-  labs(caption = "@Data Gapminder (WHO)")  +
-  geom_segment(aes(x = continent, 
-                   xend = continent, 
-                   y = 0, 
-                   yend = life_exp_2007),
-               size = 2, 
-               colour = "firebrick4")
+  labs(caption = "@Data Gapminder (WHO)") #BREAK
 ```
 
-`r chunk_reveal("dotplot-gapminder")`
+`r chunk_reveal("dotplot-gapminder", break_type = "user")`
 
 ---
 
@@ -336,7 +335,7 @@ dslabs::gapminder %>%
 ```{r lollypop-gapminder, eval=FALSE, echo = T, include=F}
 dslabs::gapminder %>% 
   filter(year == "2007") %>% 
-  group_by(continent) %>% 
+  group_by(continent) %>% #BREAK
   summarise(life_exp_2007 = mean(life_expectancy)) %>%
   mutate(continent = fct_reorder(continent, life_exp_2007)) %>% 
   ggplot(aes(continent, life_exp_2007)) + 
@@ -344,10 +343,10 @@ dslabs::gapminder %>%
   geom_segment(aes(x = continent, xend = continent, y = 0, yend = life_exp_2007),
                size = 2, colour = "firebrick4") +
   coord_flip() +
-  labs(caption = "@Data Gapminder (WHO)")
+  labs(caption = "@Data Gapminder (WHO)") #BREAK
 ```
 
-`r chunk_reveal("lollypop-gapminder")`
+`r chunk_reveal("lollypop-gapminder", break_type = "user")`
 
 ---
 class: inverse
@@ -361,6 +360,13 @@ class: inverse
 - lollypop same as geom_col() but with less ink. Uses geom_point() and geom_segment()
 - coord_flip() useful, especially when text labels are long
 - important to get order of categorical variable right, fct_reorder() useful
+
+---
+
+```{r barplot-quiz, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/01-ggplot/", ratio = "16:9")
+```
+
 
 ---
 
@@ -380,18 +386,18 @@ dslabs::gapminder %>%
   mutate(population = round(population / 1e6, 0)) %>%
   group_by(continent) %>%
   summarise(population = sum(population)) %>%
-  mutate(continent = fct_reorder(continent, population)) %>%
+  mutate(continent = fct_reorder(continent, population)) %>% #BREAK
   ggplot(aes(1, population, fill = continent)) +
     geom_col(position = "stack", show.legend = F) +
     ylab("Population (Millions)") + 
     geom_text_repel(aes(label = glue("{continent}: {population}M")),  
               position = position_stack(vjust = .5), 
               size = 6) +
-    theme_void() +
-    coord_polar(theta = "y")
+    theme_void() + #BREAK
+    coord_polar(theta = "y") # BREAK
 ```
 
-`r chunk_reveal("pie-gapminder")`
+`r chunk_reveal("pie-gapminder", break_type = "user")`
 
 ---
 
@@ -436,3 +442,10 @@ class: inverse
 - want to know relative amounts of each
 - options are stacked bars, pie, waffle, treemap
 - I'm not a huge fan of any of these
+
+
+---
+
+```{r proportion-quiz, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/03-Pie-chart/", ratio = "16:9")
+```

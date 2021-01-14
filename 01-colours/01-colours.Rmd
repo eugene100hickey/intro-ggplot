@@ -1,0 +1,57 @@
+---
+title: "Colour Palettes"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+library(RColorBrewer)
+```
+
+
+## Brewer Palettes
+
+```{r RColorBrewer, echo=FALSE}
+display.brewer.all(select = c("RdPu", "Set2", "Oranges", "Accent", "Spectral", "BrBG"))
+```
+
+```{r brewer-quiz}
+quiz(
+  question("Which of the palettes above are *diverging*?",
+    answer("BrBG", correct = TRUE),
+    answer("Spectral", correct = TRUE),
+    answer("Accent"),
+    answer("Oranges"),
+    answer("Set2"),
+    answer("RdPu")
+  )
+)
+```
+
+## Wes Anderson Palettes
+
+```{r wesanderson, echo=FALSE}
+library(wesanderson)
+pal <- wes_palette(21, name = "Moonrise2", type = "continuous")
+image(volcano, col = pal, axes = F)
+```
+
+```{r wes-quiz}
+quiz(
+  question("Which *wesanderson* palette is used in the image above?",
+    answer("IsleofDogs2"),
+    answer("GrandBudapest1"),
+    answer("Moonrise2", correct = TRUE),
+    answer("Darjeeling1"),
+    answer("BottleRocket2"),
+    answer("Rushmore")
+  )
+)
+```
+
+```{r try-palettes, exercise=TRUE, exercise.lines = 5}
+names(wes_palettes)
+wes_palette("Zissou1")
+```
