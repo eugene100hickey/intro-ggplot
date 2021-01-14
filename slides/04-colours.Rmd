@@ -100,8 +100,8 @@ xaringanExtra::style_share_again(
 
 my_colour = "firebrick4"
 ggplot2::theme_set(ggplot2::theme_minimal())
-ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free", 
-                                 size = 20, 
+ggplot2::theme_update(text = ggplot2::element_text(family = "Ink Free",
+                                 size = 20,
                                  colour = my_colour),
              axis.text = ggplot2::element_text(colour = my_colour),
              rect = element_rect(colour = my_colour),
@@ -122,13 +122,13 @@ basketball <- read_csv("data/basketball.csv")
 ```
 
 class: title-slide, right, top
-background-image: url(img/dawn.JPG)
+background-image: url(img/dawn.png)
 background-position: 90% 75%, 75% 75%
 background-size:cover
 
 .left-column[
 # `r rmarkdown::metadata$title`
-] 
+]
 
 .right-column[
 ### `r rmarkdown::metadata$subtitle`
@@ -178,7 +178,7 @@ layout: true
     - suite of colours easily distinguished
     - no heirarchy
     - caters for visual impairments
-    
+
 - sequential
     - band of colours, increasingly intense
     - go from low to high
@@ -187,9 +187,9 @@ layout: true
     - suite of colours from minus to plus
     - contrasting colours at each end
     - something neutral in the middle
-    
+
 ]
-    
+
 .pull-right[
 
 ```{r qualitative_palette, echo = F, message = F, warning=F, fig.height=2}
@@ -259,6 +259,8 @@ display.brewer.pal(8, name = "PRGn")
         - will convert from colour descriptions, e.g. hex2RGB()
 - and a [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf)
 
+---
+
 ```{r palette-quiz, echo=FALSE}
 xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/01-colours/", ratio = "16:9")
 ```
@@ -279,17 +281,31 @@ xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/01-colou
 
 # Investigating Colours in R
 
-- the following code shows the first "N" colours in R where N is set to 20 here:
+- the following code shows the first "N" colours in R where N is set to 10 here:
 
-```{r base_colours, message = F, warning = F, fig.height=3}
-N <- 20
+.pull-left[
+
+```{r base-colours, echo = T, eval = F, message = F, warning = F, fig.height=3}
+N <- 10
 data.frame(col = colors()[1:N]) %>%
   ggplot(aes(x = col, fill = col)) +
-  geom_bar(position = "stack", show.legend = F) +
+  geom_bar(position = "stack",
+           show.legend = F) +
   coord_flip() +
   theme_minimal() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(), axis.text.y = element_blank())
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.y = element_blank())
 ```
+
+]
+
+.pull-right[
+
+```{r base-colours-out, ref.label="base-colours", echo=FALSE}
+```
+
+]
 
 ---
 
@@ -314,17 +330,20 @@ data.frame(col = colors()[1:N]) %>%
 .pull-left[
 
 ![](img/simpsons.jpeg)
-]
 
-.pull-right[
-
-```{r}
+```{r simpsons, eval=F, fig.height=3}
 (colors <- colorfindr::get_colors("img/simpsons.jpeg",
                                   top_n = 6,
                                   exclude_col = "#FFFFFF"))
-scales::show_col(colors$col_hex)
+scales::show_col(colors$col_hex, ncol = 6)
 ```
- ]
+
+]
+
+.pull-right[
+```{r simpsons-out, ref.label="simpsons", echo=FALSE}
+```
+]
 
 ---
 
@@ -348,73 +367,52 @@ scales::show_col(colors$col_hex)
 
 ---
 
-```{r fig.height=5}
-plot1 <- dslabs::gapminder %>%
+```{r colours, fig.height=5, echo = FALSE, echo=FALSE, include = FALSE}
+dslabs::gapminder %>%
   group_by(continent, year) %>%
-  summarise(average_fertility = mean(fertility, na.rm = TRUE)) %>%
-  ungroup() %>%
-  ggplot(aes(x = year, y = average_fertility, col = continent)) +
-  geom_line(size = 2)
+  summarise(average_fertility =
+              mean(fertility, na.rm = TRUE)) %>%
+  ungroup() %>% #BREAK
+  ggplot(aes(x = year,
+             y = average_fertility,
+             col = continent)) +
+  geom_line(size = 2) +
+  scale_color_manual(values = c("red",
+                                "chocolate",
+                                "springgreen3",
+                                "darkgoldenrod4",
+                                "steelblue4")) + #BREAK
+  scale_color_brewer(type = 'qual') + #BREAK
+  scale_color_brewer(type = 'div') + #BREAK
+  scale_color_viridis_d(option = 'magma') + #BREAK
+  scale_color_paletteer_d(palette = 'MapPalettes::irish_flag') #BREAK
 
-plot1
 ```
 
 ---
 
-```{r}
-plot1 +
-  scale_color_manual(values = c("red", "chocolate", "springgreen3", "darkgoldenrod4", "steelblue4"))
-```
+`r chunk_reveal("colours", break_type = 'user')`
+
 
 ---
 
-```{r}
-plot1 +
-  scale_color_brewer(type = 'qual')
-```
 
----
-
-```{r}
-plot1 +
-  scale_color_brewer(type = 'div')
-```
-
----
-
-```{r}
-plot1 +
-  scale_color_viridis_d(option = 'magma')
-```
-
----
-
-```{r fig.height=5}
-# to see paletteer palette options, use
-# View(paletteer::palettes_d_names)
-
-plot1 +
-     scale_color_paletteer_d(palette = 'MapPalettes::irish_flag')
-```
-
----
-
-```{r}
-dslabs::gapminder %>% ggplot(aes(x = life_expectancy, fill = ..x..)) +
+```{r histogram-colours, eval = F, echo = F}
+dslabs::gapminder %>% 
+  ggplot(aes(x = life_expectancy,
+             fill = ..x..)) +
   geom_histogram() +
-  scale_fill_continuous(type = 'viridis')
-```
+  scale_fill_continuous(type = 'viridis') + 
+  scale_fill_gradient2(low = "darkgreen", 
+                       mid = "white",
+                       high = "firebrick4", 
+                       midpoint = 65) 
+``
 
+`r chunk_reveal("histogram-colours")`
 
 ---
 
-```{r}
-dslabs::gapminder %>% ggplot(aes(x = life_expectancy, fill = ..x..)) +
-  geom_histogram() +
-  scale_fill_gradient2(low = "darkgreen", mid = "white",
-                       high = "firebrick4", midpoint = 65)
-```
----
 
 class: center, inverse
 
@@ -428,7 +426,7 @@ class: center, inverse
 
 ---
 
-```{r facet_example1, echo = T, message=F, warning=F, fig.height=5, fig.width=12}
+```{r facet_example1, eval = FALSE, echo = T, message=F, warning=F}
 sex <- c("Female", "Male")
 names(sex) <- c("F", "M")
 cats %>%     ### cats dataset from MASS
@@ -438,31 +436,57 @@ cats %>%     ### cats dataset from MASS
   facet_grid(~Sex, labeller = labeller(Sex = sex)) +
   labs(x = "Bodyweight (kg)", y = "Heart Weight (g)") +
   theme_minimal() +
-  theme(strip.background = element_blank(), text = element_text(size = 20))
+  theme(strip.background = element_blank(), 
+        text = element_text(size = 12))
 ```
 
 ---
 
-```{r facet_example2, message = F, warning = F, fig.height=6, fig.width=12}
+```{r facet_example1-out, ref.label="facet_example1", echo=FALSE, out.width = "75%", out.height="40%"}
+```
+
+---
+
+```{r facet_example2, eval = F, message = F, warning = F, echo = T}
 movielens %>%      ### movielens dataset from dslabs
   mutate(genres = str_replace(genres, pattern = "\\|.*", "")) %>%
   filter(genres != "(no genres listed)") %>%
   ggplot(aes(rating)) +
   stat_density(position = "identity", geom = "line", adjust = 3) +
   facet_wrap(.~genres, strip.position = "bottom", nrow = 3) + theme_minimal() +
-  theme(axis.text.y = element_blank(), axis.title.y = element_blank(), axis.text.x = element_blank(),
-        strip.text = element_text(family = "Ink Free", face = "bold", size = 20, colour = "firebrick4"), axis.title.x = element_blank())
+  theme(text = element_text(size = 14),
+        axis.text.y = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.text.x = element_blank(),
+        strip.text = element_text(family = "Ink Free", 
+                                  face = "bold", 
+                                  size = 14, 
+                                  colour = "firebrick4"),
+        axis.title.x = element_blank())
 ```
 
 ---
 
-```{r facet_example3, message = F, warning = F, fig.height=8, fig.width=16}
+```{r facet_example2-out, ref.label="facet_example2", echo=FALSE, out.width = "75%", out.height="40%"}
+```
+
+---
+
+
+
+```{r facet_example3, eval = F, message = F, echo = T, warning = F}
 snails %>% ## snails dataset from the MASS library
   ggplot(aes(Exposure, Deaths, col = factor(Rel.Hum))) +
   facet_grid(Species ~ Temp) +
   geom_line() +
   geom_point() +
   theme_minimal() +
-  theme(legend.title = element_blank(), text = element_text(size = 20))
+  theme(legend.title = element_blank(), 
+        text = element_text(size = 14))
+```
+
+---
+
+```{r facet_example3-out, ref.label="facet_example3", echo=FALSE, out.width = "75%", out.height="40%"}
 ```
 

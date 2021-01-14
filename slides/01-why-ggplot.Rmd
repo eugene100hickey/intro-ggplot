@@ -80,7 +80,7 @@ xaringanExtra::style_share_again(
 
 
 class: title-slide, right, top
-background-image: url(img/moon.JPG)
+background-image: url(img/moon.png)
 background-position: 90% 75%, 75% 75%
 background-size:cover
 
