@@ -16,6 +16,8 @@ navbar:
           href: "slides/02-proportions.html"
         - text: "Morning 12:00-13:00 ggplot - Distributions/Relationships"
           href: "slides/03-distributions-relationships.html"
+        - text: "Afternoon 14:00-15:00: Colours and Facets"
+          href: "slides/04-colours.html"
     - icon: fab fa-youtube
       href: "https://www.youtube.com/channel/UCMwM-3tg_-Pbx8hKO78q5EA"
     - icon: fab fa-twitter

@@ -84,6 +84,10 @@ xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides
 Thursday, January 21st<br/>1-4pm BST ([check your time zone](https://www.worldtimebuddy.com/?qm=1&lid=2964574,360630,524901&h=2964574&date=2021-1-21&sln=13-16&hf=1))
 </aside>
 
+```{r embed-xaringan-04, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/04-colours.html", ratio = "16:9")
+```
+
 This workshop is designed for people with previous experience of R but have yet to take the plunge to working with ggplot.
 
 # Prework
