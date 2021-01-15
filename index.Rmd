@@ -33,7 +33,7 @@ meta() %>%
   meta_social(
     title = "Introduction to ggplot",
     url = "",
-    image = "https://github.com/eugene100hickey/intro-ggplot/blob/master/slides/img/front-page.png",
+    image = "https://raw.githubusercontent.com/eugene100hickey/intro-ggplot/master/slides/img/front-page.png",
     image_alt = paste(
       "Title slide of Introduction to ggplot:",
       "An Introduction to data visualisations using ggplot",

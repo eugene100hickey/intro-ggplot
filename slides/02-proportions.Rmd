@@ -38,7 +38,7 @@ meta() %>%
   meta_social(
     title = "Introduction to ggplot",
     url = "https://into-ggplot-nhsr.netlify.app",
-    image = "https://github.com/eugene100hickey/blob/main/ice.JPG",
+    image = "https://github.com/eugene100hickey/blob/main/ice.png",
     image_alt = "Front page for Introduction to ggplot",
     og_type = "website",
     og_author = "Eugene Hickey",

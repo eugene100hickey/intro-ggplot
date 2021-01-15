@@ -1,7 +1,7 @@
 ---
 title: "NHS Workshop<br>Introduction to ggplot"
 subtitle: "ggplot - Distributions/Relationships"
-session: "11:00-12:00"
+session: "12:00-13:00"
 author: "Eugene Hickey"
 institute: "Technological University Dublin"
 date: "January 21st 2021"
@@ -38,7 +38,7 @@ meta() %>%
   meta_social(
     title = "Introduction to ggplot",
     url = "https://into-ggplot-nhsr.netlify.app",
-    image = "https://github.com/eugene100hickey/blob/main/ice.JPG",
+    image = "https://github.com/eugene100hickey/blob/main/sunrise.png",
     image_alt = "Front page for Introduction to ggplot",
     og_type = "website",
     og_author = "Eugene Hickey",
