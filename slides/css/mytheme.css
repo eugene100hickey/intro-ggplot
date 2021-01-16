@@ -93,6 +93,18 @@ hr {
   border-bottom:      1px solid white;
 }
 
+
+/*-- Bullets (inverse) (Eugene) --*/
+.inverse ul {
+  list-style-type: circle;
+  text-align: left;
+}
+
+.inverse ul.b {
+  list-style-type: square;
+  text-align: left;
+}
+
 .inverse a:hover { border-bottom: none;}
 
 /*-- left-column for the 2-column layout --*/

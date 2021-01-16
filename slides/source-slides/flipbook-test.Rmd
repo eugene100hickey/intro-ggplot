@@ -1,0 +1,71 @@
+---
+title: "Flipbooking"
+subtitle: "With flipbookr and xaringan"
+author: "Gina Reynolds, December 2019"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, hygge, ninjutsu]
+    nature:
+      ratio: 16:10
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+
+```{r, include = F}
+# This is the recommended set up for flipbooks
+# you might think about setting cache to TRUE as you gain practice --- building flipbooks from scratch can be time consuming
+knitr::opts_chunk$set(fig.width = 6, message = FALSE, warning = FALSE, comment = "", cache = F)
+library(flipbookr)
+library(tidyverse)
+library(ggthemes)
+```
+
+
+
+## `break_type = "rotate"`
+
+And break_type = "rotate" is used to to cycle through distinct lines of code. The special comment to indicate which lines should be cycled through is *#ROTATE*. 
+
+--
+
+Sometimes, you will need to set the chunk option to eval = F, echo = F instead of include = F.  This will be true when the input code itself cannot be executed as code to be cycled through is incompatible and would throw an error. 
+
+
+---
+
+
+
+`r chunk_reveal("my_rotate", break_type = "rotate", widths = c(50,50))`
+
+```{r my_rotate, eval = F, echo = F}
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
+  geom_point() +
+  theme_classic() + #ROTATE
+  theme_dark() + #ROTATE
+  theme_excel() + #ROTATE
+  theme_economist() + #ROTATE
+  theme_fivethirtyeight() + #ROTATE
+  theme_wsj()#ROTATE
+```
+
+---
+
+
+`r chunk_reveal("my_rotate1", break_type = "rotate", widths = c(50,50))`
+
+```{r my_rotate1, eval = F, echo = F}
+palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
+  geom_point() +
+  theme_classic() + #ROTATE
+  theme_dark() + #ROTATE
+  theme_excel() + #ROTATE
+  theme_economist() + #ROTATE
+  theme_fivethirtyeight() + #ROTATE
+  theme_wsj()#ROTATE
+```
+
+---
