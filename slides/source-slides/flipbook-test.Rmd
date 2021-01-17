@@ -22,6 +22,7 @@ knitr::opts_chunk$set(fig.width = 6, message = FALSE, warning = FALSE, comment =
 library(flipbookr)
 library(tidyverse)
 library(ggthemes)
+library(paletteer)
 ```
 
 
@@ -38,34 +39,17 @@ Sometimes, you will need to set the chunk option to eval = F, echo = F instead o
 ---
 
 
-
 `r chunk_reveal("my_rotate", break_type = "rotate", widths = c(50,50))`
 
+
 ```{r my_rotate, eval = F, echo = F}
-palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
-  geom_point() +
-  theme_classic() + #ROTATE
-  theme_dark() + #ROTATE
-  theme_excel() + #ROTATE
-  theme_economist() + #ROTATE
-  theme_fivethirtyeight() + #ROTATE
-  theme_wsj()#ROTATE
+dslabs::gapminder %>% 
+  ggplot(aes(x = life_expectancy,
+             fill = ..x..)) +
+  geom_histogram() +
+  scale_fill_continuous(type = 'viridis') +
+  scale_fill_gradient2(low = "darkgreen", 
+                       mid = "white",
+                       high = "firebrick4", 
+                       midpoint = 65)  #ROTATE
 ```
-
----
-
-
-`r chunk_reveal("my_rotate1", break_type = "rotate", widths = c(50,50))`
-
-```{r my_rotate1, eval = F, echo = F}
-palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
-  geom_point() +
-  theme_classic() + #ROTATE
-  theme_dark() + #ROTATE
-  theme_excel() + #ROTATE
-  theme_economist() + #ROTATE
-  theme_fivethirtyeight() + #ROTATE
-  theme_wsj()#ROTATE
-```
-
----

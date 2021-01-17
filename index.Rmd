@@ -88,11 +88,18 @@ Thursday, January 21st<br/>1-4pm BST ([check your time zone](https://www.worldti
 xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/04-colours.html", ratio = "16:9")
 ```
 
+
+```{r embed-xaringan-05, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://intro-ggplot-nhs.netlify.app/slides/05-themes.html", ratio = "16:9")
+```
+
 This workshop is designed for people with previous experience of R but have yet to take the plunge to working with ggplot.
 
 # Prework
 
 ## Essential
+
+Hopefully most of what you need will be on this webpage. Our exercises can be done from within the slides themselves. But if you'd prefer to work on a local machine, then....
 
 We'll be using the software listed below.
 
@@ -123,4 +130,4 @@ devtools::install_github("nhs-r-community/NHSRdatasets")
 
 This workshop draws from various sources, most notably the books by [Kieran Healy](https://socviz.co/) and [Claus Wilkie](https://clauswilke.com/dataviz/). I'd also like to mention the webpage of [The Top 50 ggplot2 Visualisations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html). This workshop ran smoothly with the help of [Sharon Townsend](https://www.strategyunitwm.nhs.uk/author/sharon-townsend) as co-pilot.
 
-This website was made with the [distill package](https://rstudio.github.io/distill/) and a custom theme designed by Silvia Canelón.
+This website was made with the [distill package](https://rstudio.github.io/distill/). The content was created using [xaringan](https://github.com/yihui/xaringan) by Yihui Xie, [flair](https://rdrr.io/github/kbodwin/flair/) by Kelly Bodwin, [learnr](https://github.com/rstudio/learnr) and [xaringanExtra](https://github.com/gadenbuie/xaringanExtra) (both by Garrick Aden-Buie), and [flipbookr](https://github.com/EvaMaeRey/flipbookr) by Gina Reynolds. And special thanks for a custom theme designed by Silvia Canelón.

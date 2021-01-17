@@ -172,27 +172,9 @@ layout: true
 
 ### Types of Colour Scales
 
-.pull-left[
+.panelset[
 
-- qualitative
-    - suite of colours easily distinguished
-    - no heirarchy
-    - caters for visual impairments
-
-- sequential
-    - band of colours, increasingly intense
-    - go from low to high
-
-- diverging
-    - suite of colours from minus to plus
-    - contrasting colours at each end
-    - something neutral in the middle
-
-]
-
-.pull-right[
-
-```{r qualitative_palette, echo = F, message = F, warning=F, fig.height=2}
+```{r qsd_palette, echo = F, message = F, warning=F, fig.height=2}
 knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
 
 library(tidyverse)
@@ -201,7 +183,6 @@ library(dslabs)
 library(MASS)
 library(viridis)
 library(paletteer)
-display.brewer.pal(8, name = "Accent")
 
 theme_set(
   theme_minimal() +
@@ -211,15 +192,65 @@ theme_set(
 )
 ```
 
-```{r sequential_palette, echo = F, message = F, warning=F, fig.height=2}
-display.brewer.pal(8, name = "BuGn")
+.panel[
+.panel-name[Qualitative]
+
+.pull-left[
+
+- suite of colours easily distinguished
+- no heirarchy
+- caters for visual impairments
+]
+
+.pull-right[
+
+```{r qualitative_palette, echo = F, message = F, warning=F, fig.height=6}
+
+display.brewer.pal(8, name = "Accent")
+
 ```
 
-```{r diverging_palette, echo = F, message = F, warning=F, fig.height=2}
+]
+]<!-- close first panel -->
+
+.panel[
+.panel-name[Sequential]
+.pull-left[
+
+- band of colours, increasingly intense
+- go from low to high
+
+]
+
+.pull-right[
+
+```{r sequential_palette, echo = F, message = F, warning=F, fig.height=6}
+display.brewer.pal(8, name = "BuGn")
+
+```
+]
+]<!-- close second panel -->
+
+.panel[
+.panel-name[Diverging]
+.pull-left[
+
+- suite of colours from minus to plus
+- contrasting colours at each end
+- something neutral in the middle
+
+]
+
+.pull-right[
+
+```{r diverging_palette, echo = F, message = F, warning=F, fig.height=6}
 display.brewer.pal(8, name = "PRGn")
 ```
 
 ]
+]<!-- close third panel -->
+]<!-- close panelset -->
+
 ---
 
 # Getting Colours in R
@@ -230,16 +261,21 @@ display.brewer.pal(8, name = "PRGn")
         - excels at palettes for vision-impaired readers
     - <span style='color: #B03A2E'>paletteer</span>
         - collection of palettes from various sources
-
-
-
----
-
-# Getting Colours in R cont..
-- some really great packages
     - <span style='color: #B03A2E'>wesanderson</span>
         - <i>names(wes_palettes)</i> followed
         by <i>wes_palette("BottleRocket1")</i>
+    - <span style='color: #B03A2E'>rtist</span>
+        - lifts principle colours from paintings
+        
+---
+
+```{r rtist, echo = T, eval = F}
+library(rtist)
+par(mfrow = c(3, 5))
+map(names(rtist_palettes), function(x) print(rtist_palette(x)))
+```
+
+![](img/rtist.png)
 
 ---
 
@@ -248,10 +284,6 @@ display.brewer.pal(8, name = "PRGn")
         - not just colours, but layouts and fonts
         - everything from Game of Thrones to Spongebob (yes, really)
     - ggsci(), palettes for scientific publications (Lancet, AAAS, etc)
-
----
-
-- and more....
     - colorspace()
         - resources for picking colours
         - choose_color() and choose_palette()
@@ -367,32 +399,33 @@ scales::show_col(colors$col_hex, ncol = 6)
 
 ---
 
-```{r colours, fig.height=5, echo = FALSE, echo=FALSE, include = FALSE}
+`r chunk_reveal("my_rotate", break_type = "rotate", widths = c(60,40))`
+
+```{r my_rotate, eval = F, echo = F}
 dslabs::gapminder %>%
   group_by(continent, year) %>%
   summarise(average_fertility =
               mean(fertility, na.rm = TRUE)) %>%
-  ungroup() %>% #BREAK
+  ungroup() %>%
   ggplot(aes(x = year,
              y = average_fertility,
              col = continent)) +
-  geom_line(size = 2) +
-  scale_color_manual(values = c("red",
-                                "chocolate",
-                                "springgreen3",
-                                "darkgoldenrod4",
-                                "steelblue4")) + #BREAK
-  scale_color_brewer(type = 'qual') + #BREAK
-  scale_color_brewer(type = 'div') + #BREAK
-  scale_color_viridis_d(option = 'magma') + #BREAK
-  scale_color_paletteer_d(palette = 'MapPalettes::irish_flag') #BREAK
-
+  geom_line(size = 2) + 
+  scale_color_brewer(type = 'qual') + #ROTATE
+  scale_color_brewer(type = 'div') + #ROTATE
+  scale_color_viridis_d(option = 'magma') + #ROTATE
+  scale_color_paletteer_d('rtist::warhol') + #ROTATE
+  scale_color_paletteer_d('MapPalettes::irish_flag') + #ROTATE
+  scale_color_paletteer_d('yarrr::southpark') + #ROTATE
+  scale_color_paletteer_d('dutchmasters::pearl_earring') + #ROTATE
+  scale_color_paletteer_d('dutchmasters::view_of_Delft') + #ROTATE
+  scale_color_paletteer_d('ghibli::KikiLight') + #ROTATE
+  scale_color_paletteer_d('LaCroixColoR::Coconut') + #ROTATE
+  scale_color_paletteer_d('LaCroixColoR::PassionFruit') + #ROTATE
+  scale_color_paletteer_d('ggsci::lanonc_lancet') + #ROTATE
+  scale_color_paletteer_d('ggsci::default_uchicago') + #ROTATE
+  scale_color_paletteer_d('ggsci::uniform_startrek') #ROTATE
 ```
-
----
-
-`r chunk_reveal("colours", break_type = 'user')`
-
 
 ---
 
@@ -402,14 +435,14 @@ dslabs::gapminder %>%
   ggplot(aes(x = life_expectancy,
              fill = ..x..)) +
   geom_histogram() +
-  scale_fill_continuous(type = 'viridis') + 
+  scale_fill_continuous(type = 'viridis') + #BREAK
   scale_fill_gradient2(low = "darkgreen", 
                        mid = "white",
                        high = "firebrick4", 
-                       midpoint = 65) 
-``
+                       midpoint = 65)  #BREAK
+```
 
-`r chunk_reveal("histogram-colours")`
+`r chunk_reveal("histogram-colours", break_type = "user", widths = c(50,50))`
 
 ---
 
