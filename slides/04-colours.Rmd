@@ -459,7 +459,9 @@ class: center, inverse
 
 ---
 
-```{r facet_example1, eval = FALSE, echo = T, message=F, warning=F}
+`r chunk_reveal("facet-example1")`
+
+```{r facet-example1, eval = FALSE, echo = F, message=F, warning=F}
 sex <- c("Female", "Male")
 names(sex) <- c("F", "M")
 cats %>%     ### cats dataset from MASS
@@ -470,56 +472,39 @@ cats %>%     ### cats dataset from MASS
   labs(x = "Bodyweight (kg)", y = "Heart Weight (g)") +
   theme_minimal() +
   theme(strip.background = element_blank(), 
-        text = element_text(size = 12))
+        text = element_text(size = 32,
+                            family = "Ink Free"))
 ```
 
 ---
 
-```{r facet_example1-out, ref.label="facet_example1", echo=FALSE, out.width = "75%", out.height="40%"}
-```
+`r chunk_reveal("facet-example2", break_type = "user")`
 
----
-
-```{r facet_example2, eval = F, message = F, warning = F, echo = T}
+```{r facet-example2, eval = F, message = F, warning = F, echo = F}
 movielens %>%      ### movielens dataset from dslabs
   mutate(genres = str_replace(genres, pattern = "\\|.*", "")) %>%
   filter(genres != "(no genres listed)") %>%
   ggplot(aes(rating)) +
-  stat_density(position = "identity", geom = "line", adjust = 3) +
-  facet_wrap(.~genres, strip.position = "bottom", nrow = 3) + theme_minimal() +
-  theme(text = element_text(size = 14),
-        axis.text.y = element_blank(), 
+  stat_density(position = "identity", geom = "line", adjust = 3) + #BREAK
+  facet_wrap(.~genres, strip.position = "bottom", nrow = 3) + #BREAK 
+  theme(axis.text.y = element_blank(), 
         axis.title.y = element_blank(), 
         axis.text.x = element_blank(),
-        strip.text = element_text(family = "Ink Free", 
-                                  face = "bold", 
-                                  size = 14, 
-                                  colour = "firebrick4"),
-        axis.title.x = element_blank())
+        axis.title.x = element_blank()) #BREAK
 ```
 
 ---
 
-```{r facet_example2-out, ref.label="facet_example2", echo=FALSE, out.width = "75%", out.height="40%"}
-```
+`r chunk_reveal("facet-example3", break_type = "user")`
 
----
-
-
-
-```{r facet_example3, eval = F, message = F, echo = T, warning = F}
-snails %>% ## snails dataset from the MASS library
+```{r facet-example3, eval = F, message = F, echo = F, warning = F}
+## snails dataset from the MASS library 
+snails %>% #BREAK
   ggplot(aes(Exposure, Deaths, col = factor(Rel.Hum))) +
-  facet_grid(Species ~ Temp) +
-  geom_line() +
-  geom_point() +
-  theme_minimal() +
-  theme(legend.title = element_blank(), 
-        text = element_text(size = 14))
+  geom_line() + 
+  geom_point() + 
+  theme(legend.title = element_blank()) +  #BREAK
+  facet_grid(Species ~ Temp)  #BREAK
 ```
 
----
-
-```{r facet_example3-out, ref.label="facet_example3", echo=FALSE, out.width = "75%", out.height="40%"}
-```
 

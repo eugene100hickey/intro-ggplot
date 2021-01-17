@@ -39,17 +39,31 @@ Sometimes, you will need to set the chunk option to eval = F, echo = F instead o
 ---
 
 
+
 `r chunk_reveal("my_rotate", break_type = "rotate", widths = c(50,50))`
 
-
 ```{r my_rotate, eval = F, echo = F}
-dslabs::gapminder %>% 
-  ggplot(aes(x = life_expectancy,
-             fill = ..x..)) +
-  geom_histogram() +
-  scale_fill_continuous(type = 'viridis') +
-  scale_fill_gradient2(low = "darkgreen", 
-                       mid = "white",
-                       high = "firebrick4", 
-                       midpoint = 65)  #ROTATE
+dslabs::gapminder %>%
+  group_by(continent, year) %>%
+  summarise(average_fertility =
+              mean(fertility, na.rm = TRUE)) %>%
+  ungroup() %>%
+  ggplot(aes(x = year,
+             y = average_fertility,
+             col = continent)) +
+  geom_line(size = 2) +
+  scale_color_brewer(type = 'qual') + #ROTATE
+  scale_color_brewer(type = 'div') + #ROTATE
+  scale_color_viridis_d(option = 'magma') + #ROTATE
+  scale_color_paletteer_d('rtist::warhol') + #ROTATE
+  scale_color_paletteer_d('MapPalettes::irish_flag') + #ROTATE
+  scale_color_paletteer_d('yarrr::southpark') + #ROTATE
+  scale_color_paletteer_d('dutchmasters::pearl_earring') + #ROTATE
+  scale_color_paletteer_d('dutchmasters::view_of_Delft') + #ROTATE
+  scale_color_paletteer_d('ghibli::KikiLight') + #ROTATE
+  scale_color_paletteer_d('LaCroixColoR::Coconut') + #ROTATE
+  scale_color_paletteer_d('LaCroixColoR::PassionFruit') + #ROTATE
+  scale_color_paletteer_d('ggsci::lanonc_lancet') + #ROTATE
+  scale_color_paletteer_d('ggsci::default_uchicago') + #ROTATE
+  scale_color_paletteer_d('ggsci::uniform_startrek') #ROTATE
 ```
