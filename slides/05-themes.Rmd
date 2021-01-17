@@ -182,6 +182,7 @@ knitr::include_graphics("img/youll-always-be-mine.jpg")
 .pull-left[
 
 ```{r font_add_google, echo = T, message = FALSE, warning = FALSE, eval=FALSE}
+theme_update(text = element_text(size = 80))
 library(showtext)
 font_add_google(name = "Covered By Your Grace", 
                 family = "grace")
@@ -193,7 +194,7 @@ msleep %>% ggplot(aes(x = bodywt,
   scale_x_log10(labels = scales::label_comma()) + 
   scale_y_log10(labels = scales::label_comma()) + 
   labs(title = "Bigger Animals have Bigger Brains") +
-  theme(text = element_text(size = 40, family = "grace"))
+  theme(text = element_text(family = "grace"))
 ```
 ]
 
