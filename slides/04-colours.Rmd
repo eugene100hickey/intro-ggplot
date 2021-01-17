@@ -495,7 +495,7 @@ movielens %>%      ### movielens dataset from dslabs
 
 ---
 
-`r chunk_reveal("facet-example3", break_type = "user")`
+`r chunk_reveal("facet-example3", break_type = "user", widths = c(60,40))`
 
 ```{r facet-example3, eval = F, message = F, echo = F, warning = F}
 ## snails dataset from the MASS library 
@@ -504,7 +504,8 @@ snails %>% #BREAK
   geom_line() + 
   geom_point() + 
   theme(legend.title = element_blank()) +  #BREAK
-  facet_grid(Species ~ Temp)  #BREAK
+  facet_grid(Species ~ Temp, 
+             scales = "free")  #BREAK
 ```
 
 
