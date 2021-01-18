@@ -172,7 +172,50 @@ class: top
 
 ---
 
-# Why ggplot?
+## Why We're Here
+
+- Alternative to base graphics, Excel, and Tableau
+- Enables Reproducible Research
+- Can Make Lots of Plots Quickly
+    - Good for Exploratory Analysis
+- Publication Ready Figures
+
+## And.... a gateway to so much more
+
+- data capture
+- statistical analysis
+- machine learning
+- artificial intelligence
+- writing a book
+- writing a blog
+
+---
+
+## Not Why We're Here
+
+- Won't discuss choices for data presentation
+- Nor good practices in visualisations
+    - but these are sort of in the background
+- This isn't a machine learning course
+    - but lots of the techniques we'll use are relevant
+- So, this course it about skills development, how you use these is up to you.
+
+---
+
+## We said we wouldn't discuss this....but
+
+- Graphics are important, overlooked, and inconsistent
+- Need to tell a story
+- Can be misleading, almost always by accident
+- Choice of colours - we'll spend some time on this
+- Choice of fonts
+- Keep it simple - reduce amount of ink
+- Increasing number of options for showcasing your data
+
+---
+
+
+# Why ggplot rather than base?
 
 - while some plots can be easier to produce using base graphics
 
@@ -198,27 +241,29 @@ ggplot(data = LOS_model, aes(Age)) +
 
 # Why ggplot?
 
-- anything moderately complicated is better in ggplot
+- anything moderately complicated is better in ggplot (from [David Robinson](http://varianceexplained.org/r/why-I-use-ggplot2/))
 
-```{r}
+```{r cache = F}
 top_data <- readRDS("data/top_data.rds")
+top_data$combined <- paste(top_data$name, top_data$systematic_name)
+choice <- c(" YIL166C", " YKL187C", " YLL055W", " YOL164W", " YPL201C", "ADH2 YMR303C", "AGP3 YFL055W", "CTA1 YDR256C", "DAL5 YJR152W")
+top_data <- top_data %>% dplyr::filter(combined %in% choice) %>% 
+  mutate(combined = as.factor(combined))
+theme_set(theme_minimal() + theme(panel.border = element_rect(colour = "black", fill = NA)))
 ```
 
 
 .pull-left[
-```{r baseplot-label, eval=FALSE, echo = TRUE}
-# David Robinson
-# http://varianceexplained.org/r/why-I-use-ggplot2/
+```{r baseplot-label, eval=FALSE, echo = TRUE, cache = F}
 par(mar = c(1.5, 1.5, 1.5, 1.5))
 
 colors <- 1:6
 names(colors) <- unique(top_data$nutrient)
 
-# legend approach from http://stackoverflow.com/a/10391001/712603
-m <- matrix(c(1:20, 21, 21, 21, 21), nrow = 6, ncol = 4, byrow = TRUE)
+# legend approach from http://stackoverflow.com/a/10391001/712603 
+m <- matrix(c(1:18), nrow = 6, ncol = 3, byrow = TRUE)
 layout(mat = m, heights = c(.18, .18, .18, .18, .18, .1))
 
-top_data$combined <- paste(top_data$name, top_data$systematic_name)
 for (gene in unique(top_data$combined)) {
     sub_data <- filter(top_data, combined == gene)
     plot(expression ~ rate, sub_data, col = colors[sub_data$nutrient], main = gene)
@@ -231,13 +276,13 @@ for (gene in unique(top_data$combined)) {
 }
 
 # create a new plot for legend
-plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
-legend("top", names(colors), col = colors, horiz = TRUE, lwd = 4)
+# plot(1, type = "n", axes = FALSE, xlab = "", ylab = "")
+# legend("top", names(colors), col = colors, horiz = TRUE, lwd = 4)
 ```
 ]
 
 .pull-right[
-```{r baseplot-label-out, ref.label="baseplot-label", echo=FALSE, fig.height=9}
+```{r baseplot-label-out, ref.label="baseplot-label", echo=FALSE, fig.height=9, cache = F}
 ```
 ]
 
@@ -248,16 +293,18 @@ legend("top", names(colors), col = colors, horiz = TRUE, lwd = 4)
 - anything moderately complicated is better in ggplot
 
 .pull-left[
-```{r ggplot-label, eval=FALSE, echo = TRUE}
+```{r ggplot-label, eval=FALSE, echo = TRUE, fig.height=4, cache = F}
 ggplot(top_data, aes(rate, expression, color = nutrient)) +
-    geom_point(show.legend = FALSE) +
-    geom_smooth(method = "lm", se = FALSE, show.legend = FALSE) +
-    facet_wrap(~systematic_name, scales = "free_y")
+  geom_point(show.legend = FALSE) +
+  geom_smooth(method = "lm", se = FALSE, show.legend = FALSE) +
+  facet_wrap(~combined, 
+             scales = "free_y", 
+             nrow = 3)
 ```
 ]
 
 .pull-right[
-```{r ggplot-label-out, ref.label="ggplot-label", echo=FALSE, fig.height=9}
+```{r ggplot-label-out, ref.label="ggplot-label", cache = F, echo=FALSE, fig.height=6}
 ```
 ]
 
@@ -305,6 +352,51 @@ fviz_cluster_example + theme_classic()
 
 - fits in nicely with the rest of the tidyverse
 
+---
+
+# Resources
+
+- [Big Book of R](https://www.bigbookofr.com/index.html)
+- books
+    - *recommended text* **Data Visualization** by Kieran Healy (ISBN = 978-0691181622). ~€25. Also online at [https://socviz.co/index.html](https://socviz.co/index.html)
+    - [Hadley's book, R for Data Science](https://r4ds.had.co.nz/)
+    - [Hadley's book on ggplot2](https://ggplot2-book.org/)
+    - [Data Visualization by Wilke](https://serialmentor.com/dataviz/), lots of his actual code is on github at [https://github.com/clauswilke/practical_ggplot2](https://github.com/clauswilke/practical_ggplot2)
+    - check out the list of online books at [bookdown.org](bookdown.org)
+
+
+<img src="img/hadley.jpeg" height="100px" width="100px" align="right"/>
+
+---
+
+- websites
+    - Karl Broman (https://www.biostat.wisc.edu/~kbroman/), and particularly [this presentation](https://www.biostat.wisc.edu/~kbroman/presentations/graphs_MDPhD2014.pdf)
+    - course by Boemhke on github [github.com/uc-r/Intro-R](https://github.com/uc-r/Intro-R)
+    - the good people at RStudio have lots of help at [resources.rstudio.com/](https://resources.rstudio.com/)
+    - [Cedric](https://cedricscherer.netlify.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/). 
+    - [The R Graph Gallery](https://www.r-graph-gallery.com/index.html) is pretty good and worth checking out
+    
+<br/>  
+<br/>
+<br/>
+<img src="https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg" height="80px" width="100px" align="right"/>    
+    
+---
+
+- Some stuff about graphics in general
+    - [Rafael Irizarry - plots to avoid](http://genomicsclass.github.io/book/pages/plots_to_avoid.html)
+    - [hit parade of graphs in R](https://www.r-graph-gallery.com/index.html)
+    - [Cedric Scherer again](https://cedricscherer.netlify.com/)
+    - some stuff from [Christian Burkhard](https://ggplot2tor.com/make_any_plot_look_better/make_any_plot_look_better/)
+    - and from [Laura Ellis](https://www.littlemissdata.com/)
+    - and from [Peter Aldhous](http://paldhous.github.io/ucb/2016/dataviz/)
+    - [colours in R](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf)
+    - cool book on good graphics from [Stephen Few](https://nces.ed.gov/programs/slds/pdf/08_F_06.pdf)
+    - [The Glamour of Graphics](https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0) talk from last years RStudio Conference (the [2021 version](https://rstudio.com/conference/) starts this evening)
+   
+
+
+<img src="img/rafael.jpg" height="100px" width="100px" align="right"/>
 
 
 

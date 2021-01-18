@@ -1,0 +1,731 @@
+---
+title: "Data Visualisation - Introduction"
+author: "Eugene"
+date: "`r format(Sys.Date(), '%B %d %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [TUD01, TUD02, tamu-fonts]
+---
+
+class: center, inverse
+
+# Course Contents
+
+---
+
+1. System Configuration - installing software
+2. Using RStudio
+3. Introduction to R
+4. Getting and Cleaning Data
+5. Exploratory Analysis - making rough plots
+6. Different Types of Plots
+7. Playing with Aesthetics
+8. Using Plotting Themes
+9. Advanced Topics - Maps, Networks
+
+---
+
+## Why We're Here
+
+- Alternative to Excel, and Tableau
+- Enables Reproducible Research
+- Can Make Lots of Plots Quickly
+    - Good for Exploratory Analysis
+- Publication Ready Figures
+
+---
+
+## And.... a gateway to so much more
+
+- data capture
+- statistical analysis
+- machine learning
+- artificial intelligence
+- writing your thesis
+- writing a blog
+
+---
+
+## Not Why We're Here
+
+- Won't discuss choices for data presentation
+- Nor good practices in visualisations
+    - but these are sort of in the background
+- This isn't a machine learning course
+    - but lots of the techniques we'll use are relevant
+- So, this course it about skills development, how you use these is up to you.
+
+---
+
+## We said we wouldn't discuss this....but
+
+- Graphics are important, overlooked, and inconsistent
+- Need to tell a story
+- Can be misleading, almost always by accident
+- Choice of colours - we'll spend some time on this
+- Choice of fonts
+- Keep it simple - reduce amount of ink
+- Increasing number of options for showcasing your data
+
+---
+
+
+
+```{r bar_plot, message=F, warning=F, echo=F, fig.width=7, fig.align='center', fig.height=7, cache=T}
+library(tidyverse)
+library(ggtext)
+
+title = "Sales of Jeans in Wakanda by Year.<br>Either <b style = color:'#AE404D'> Bootcut </b> or <b style=color:'#2E4B71'> Slimfit</b>"
+jeans <- data.frame(year = 2000:2012, 
+                    bootcut = c(1873, 1984, 2020, 2180, 2187, 2280, 2410, 2420, 2559, 2602, 2725, 2844, 2755),
+                    slimfit = c(1750, 1740, 1710, 1954, 1994, 2067, 2290, 2547, 2541, 2801, 2855, 3007, 3076))
+
+jeans %>% 
+  pivot_longer(names_to = "jean_type", cols = -year, values_to = "sales") %>% 
+  ggplot(aes(year, sales-1500, fill = jean_type)) + 
+  geom_col(position = position_dodge()) +
+  scale_fill_manual(values = c('#AE404D', '#2E4B71')) +
+  labs(title = title,
+       caption = "barplot by @eugene100hickey, data: Marvel Corporation") +
+  ylab("") +
+  xlab("Year") +
+  theme_minimal() +
+  theme(
+    plot.title = element_markdown(vjust = 7, size = 24),
+    legend.position = "none",
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 16),
+    panel.grid = element_blank())
+```
+
+---
+
+```{r line_plot, message=F, warning=F, echo=F, fig.width=7, fig.align='center', fig.height=7, cache=T}
+
+jeans %>% 
+  pivot_longer(names_to = "jean_type", cols = -year, values_to = "sales") %>% 
+  ggplot(aes(year, sales-1500, col = jean_type)) + 
+  geom_line(width = 2) +
+  geom_point(size = 2) + 
+  scale_color_manual(values = c('#AE404D', '#2E4B71')) +
+  labs(title = title,
+       caption = "lineplot by @eugene100hickey, data: Marvel Corporation") +
+  ylab("") +
+  xlab("Year") + 
+  scale_x_continuous(labels = scales::number_format(accuracy = 1)) + 
+  xlim(2000, 2015) +
+  theme_minimal() +
+  theme(
+    plot.title = element_markdown(vjust = 7, size = 24),
+    legend.position = "none",
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.x = element_text(size = 18),
+    axis.text.x = element_text(size = 16),
+    panel.grid = element_blank())
+
+```
+
+---
+
+```{r climate_plot, message=F, warning=F, echo=F, fig.width=7, fig.align='center', fig.height=7, cache=T}
+dslabs::temp_carbon %>% 
+  ggplot(aes(year, temp_anomaly+292)) + 
+  geom_line(col = "darkblue", size = 2) + 
+  xlim(1880, 2020) + 
+  ylim(0, 400) + 
+  ylab("Temperature (K)") +
+  xlab("Year") +
+  labs(title = "The Only Graph on Global \nWarming You'll Ever Need",
+       caption = "temperatures by @eugene100hickey, data: NOAA") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 24),
+        plot.title = element_text(size = 32),
+        axis.text = element_text(size = 24))
+```
+
+
+---
+class: center, inverse
+
+# Let's Begin
+
+---
+
+## Install R and RStudio
+
+---
+
+### *R*
+- Go to [*CRAN*](https://cran.r-project.org/)
+
+### *RStudio*
+
+- this is the IDE we will use (and pretty much everyone else uses)
+- R is the engine, RStudio is the cockpit
+- download from [*RStudio*](https://rstudio.com/products/rstudio/download/)
+
+---
+
+## Using RStudio 
+
+- toolbar across the top
+    - I don't use this very much
+- set of quick links below that
+    - top left (green plus sign) is about the only one I use
+- 4 Panes
+    - top left for files or looking at data
+    - bottom left for the console
+    - top right for *Environment* - tells what variables are stored
+    - bottom right for plots and help
+    
+---
+
+[This](https://learnr-examples.shinyapps.io/ex-setup-r/#section-welcome) is a nice tutorial suite to explain installing R and RStudio:
+
+---
+
+<img src="images/rstudio.PNG" height="600px" width="800px" align="center"/> 
+
+---
+
+- usual work flow is:
+    - try commands out at the console (bottom left)
+    - when that works, store them in a file (top left)
+    - when sequence of commands works, put them into a document (also top left)
+
+---
+ 
+## Extending R
+
+- installing R just gives you *base* R
+- beauty of this tool lies with *packages*
+- we'll look at installing these from three sources:
+    - CRAN
+    - Bioconductor
+    - github
+
+---
+
+- [CRAN](https://cran.r-project.org/) 
+    - example, on console type *install.packages("tidyverse")*
+    - this installs the tidyverse package (or rather, family of packages)
+    - over 20k packages on CRAN (see list [here](http://cran.nexr.com/web/packages/available_packages_by_name.html))
+    - sometimes esoteric ([engsoccerdata](http://cran.nexr.com/web/packages/engsoccerdata/index.html))
+    - sometimes cutting edge ([deep learning](http://cran.nexr.com/web/packages/keras/index.html))
+    - each package heavily curated and maintained
+    
+---
+
+- [Bioconductor](www.bioconductor.org)
+    - set of bioinformatics packages (lots of genomics)
+    - start with *install.packages("BiocManager")*
+    - then *BiocManager::install("some_genomics_package")* to use
+    - list of packages [here](http://bioconductor.org/packages/release/BiocViews.html)
+    - about 3,000 packages, including genome builds
+    
+---
+
+- github
+    - packages in development
+    - start with *install.packages("devtools")*
+    - then *devtools::install_github("developer_name/package_name")*
+    - almost 80k packages [here](http://rpkg.gepuro.net/)
+    - the package *githubinstall* is useful to search these
+   
+---
+
+background-position: center
+background-size: contain
+class: center, inverse    
+    
+# Resources
+
+- [Big Book of R](https://www.bigbookofr.com/index.html)
+---
+
+- books
+    - *recommended text* **Data Visualization** by Kieran Healy (ISBN = 978-0691181622). ~€25. Also online at [https://socviz.co/index.html](https://socviz.co/index.html)
+    - [Hadley's book, R for Data Science](https://r4ds.had.co.nz/)
+    - [Hadley's book on ggplo2](https://ggplot2-book.org/)
+    - [Data Visualization by Wilke](https://serialmentor.com/dataviz/), lots of his actual code is on github at [https://github.com/clauswilke/practical_ggplot2](https://github.com/clauswilke/practical_ggplot2)
+    - check out the list of online books at [bookdown.org](bookdown.org)
+
+
+<img src="images/hadley.jpg" height="100px" width="100px" align="right"/>
+
+---
+
+- websites
+    - Karl Broman (https://www.biostat.wisc.edu/~kbroman/), and particularly [this presentation](https://www.biostat.wisc.edu/~kbroman/presentations/graphs_MDPhD2014.pdf)
+    - course by Boemhke on github [github.com/uc-r/Intro-R](https://github.com/uc-r/Intro-R)
+    - the good people at RStudio have lots of help at [resources.rstudio.com/](https://resources.rstudio.com/)
+    - [Cedric](https://cedricscherer.netlify.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/). 
+    - [The R Graph Gallery](https://www.r-graph-gallery.com/index.html) is pretty good and worth checking out
+    
+<br/>  
+<br/>
+<br/>
+<img src="https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg" height="80px" width="100px" align="right"/>    
+    
+---
+
+- Blogs and Podcasts
+    - [www.simplystatistics.org](www.simplystatistics.org)
+    - [varianceexplained.org](http://varianceexplained.org/)
+    - [Not So Standard Deviations](http://nssdeviations.com/)
+    - [Thomas Lin Pedersen video](https://github.com/thomasp85/ggplot2_workshop)
+    
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<img src="images/hillary.jpeg" height="100px" width="100px" align="right"/>
+    
+    
+---
+
+- Online Courses
+    - Coursera: [Data Science from Johns Hopkins](https://www.coursera.org/specializations/jhu-data-science). The course notes are on [github](http://datasciencespecialization.github.io/)
+    - edx.org [course from Irizarry](https://www.edx.org/course/data-science-visualization)
+    - [datacamp](www.datacamp.com)
+    
+<br/>  
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<img src="images/rafael.jpg" height="100px" width="100px" align="right"/>
+    
+---
+
+- Miscellaneous
+    - [Dublin R MeetUp](https://www.meetup.com/DublinR/) 
+    - [RWeekly.org](rweekly.org), round up of events in the world of R
+    - [#Rstats on twitter](https://twitter.com/search?q=%23rstats&src=typed_query)
+    - [#TidyTuesday](https://twitter.com/search?q=%23TidyTuesday&src=typeahead_click) on twitter
+    - [R Cheatsheets](https://rstudio.com/resources/cheatsheets/)
+    - if you get stuck, google is your friend. Often sends you to stackoverflow.com or stackexchange.com
+    
+---
+
+- Some stuff about graphics in general
+    - [again, from Irizarry](http://genomicsclass.github.io/book/pages/plots_to_avoid.html)
+    - [hit parade of graphs in R](https://www.r-graph-gallery.com/index.html)
+    - [Cedric Scherer again](https://cedricscherer.netlify.com/)
+    - some stuff from [Christian Burkhard](https://ggplot2tor.com/make_any_plot_look_better/make_any_plot_look_better/)
+    - and from [Laura Ellis](https://www.littlemissdata.com/)
+    - and from [Peter Aldhous](http://paldhous.github.io/ucb/2016/dataviz/)
+    - [colours in R](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf)
+    - cool book on good graphics from [Stephen Few](https://nces.ed.gov/programs/slds/pdf/08_F_06.pdf)
+    - [The Glamour of Graphics](https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0) talk from last months RStudio Conference
+   
+---
+    
+## What You Have to Do
+
+- Do a dataquest course every week
+- Produce four data graphics
+    - the first three of these will be specified
+    - last one will your chance to express yourself
+    - do one #TidyTuesday challenge
+    
+---
+
+## Course Communications
+
+- moodle, of course
+- twitter via #data_vis_2020
+    - I'll be doing lots of retweets here
+    - but also for general communications
+- email at eugene.hickey@tudublin.ie
+- you'll need to create an account at dataquest.io and send me the email you'll use for this account
+   - I can check your progress on dataquest courses
+
+---
+
+# Some Example Images
+
+
+```{r libraries, echo = F, warning = F, message=F, cache=F, fig.width=9, fig.align='center'}
+#libraries
+library(getTBinR)
+library(ggimage)
+library(tidyverse)
+library(gganimate)
+library(ggfortify)
+library(rgdal)
+library(rmapshaper)
+library(png)
+library(gridGraphics)
+library(extrafont)
+library(imager)
+library(factoextra)
+library(knitr)
+library(kableExtra)
+library(tibble)
+library(scales)
+library(ABAData)
+library(ggmap)
+library(lubridate)
+library(rgbif)
+library(ggwordcloud)
+require(httr)
+require(readxl)
+library(rtweet)
+library(emo)
+library(rvest)
+```
+
+
+```{r tidytuesday_rollercoaster_data, echo = F, warning = F, message=F, cache=T, fig.width=9, fig.align='center'}
+setwd("/home/eugene/Desktop/Academic/Research/R_Fun/tidytuesday/amusement_parks/")
+
+#data
+tx_injuries <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-09-10/tx_injuries.csv")
+
+#Cleaning the age column, the one I'll be using
+injuries <- tx_injuries%>%
+  mutate(age = as.numeric(age))%>%
+  filter(age != "NA")
+
+
+#creating dataframe with density as I want to plot with geom_line
+inj_dens <- density(injuries$age)
+df <- data.frame(x=inj_dens$x, y=inj_dens$y)%>%filter(x>= 0)
+
+#Second data frame that will be used to create "fake gridlines"
+#I'm basically taking the density df and selecting every 20th row
+#this will create the "structure" of the rollercoaster
+df2 <- df[seq(1, nrow(df), 20), ]
+
+#images that will be used in the plot (the wagons)
+img1 <- load.image("https://github.com/aaumaitre/tidytuesday/blob/master/Amusement%20Parks/roller.png?raw=true")
+g1 <- rasterGrob(img1, interpolate=FALSE)
+
+img2 <- load.image("https://github.com/aaumaitre/tidytuesday/blob/master/Amusement%20Parks/roller2.png?raw=true")
+g2 <- rasterGrob(img2, interpolate=FALSE)
+
+img3 <- load.image("https://github.com/aaumaitre/tidytuesday/blob/master/Amusement%20Parks/roller3.png?raw=true")
+g3 <- rasterGrob(img3, interpolate=FALSE)
+
+setwd("/home/eugene/Desktop/Academic/Science4/Projects/2019")
+
+data("dataset_adult")
+
+autism_genes <- read_csv("autism_genes_sfari.csv")
+
+autism_genes <- head(autism_genes, 30)
+
+autism_allen_wide <- dataset_adult %>% 
+  dplyr::filter(hgnc_symbol %in% autism_genes$Autism_Genes) %>% 
+  dplyr::select(hgnc_symbol, structure, signal) %>% 
+  distinct() %>% 
+  spread(key = structure, value = signal) %>% 
+  column_to_rownames(var = "hgnc_symbol") %>% 
+  t() %>% 
+  scale() %>% 
+  t()
+
+
+# Africa TB data
+setwd("~/Desktop/Coursera/Maps/")
+
+tb_africa <- get_tb_burden() %>% 
+  filter(g_whoregion %in% c("Africa", "Eastern Mediterranean")) %>% 
+  filter(year > 2010) %>% 
+  mutate(country = str_replace(country, 
+                               "Côte d'Ivoire", 
+                               "Cote d`Ivoire")) %>% 
+  mutate(country = str_replace(country, 
+                               "Congo", 
+                               "Congo-Brazzaville")) %>% 
+  mutate(country = str_replace(country, 
+                               "Democratic Republic of the Congo-Brazzaville", 
+                               "Democratic Republic of Congo")) %>% 
+  mutate(country =  str_replace(country, 
+                                "United Republic of Tanzania",
+                                "Tanzania"))
+
+  
+africa <- suppressMessages(readOGR(dsn = "Africa", layer = "Africa", verbose = F))
+africa <- ms_simplify(africa, keep = 0.01)
+africa$id <- row.names(africa)
+africa_df <- fortify(africa)
+africa_df <- left_join(africa_df, africa@data)
+africa_df <- africa_df %>% rename(country = COUNTRY)
+africa_df <- africa_df %>% 
+  mutate(country = 
+           replace(country, country == "Western Sahara", "Morocco"),
+         country = 
+           replace(country, country == "South Sudan", "Sudan"))
+africa_df <- left_join(africa_df, tb_africa)
+
+
+#knotweed plot data
+knotweed <- occ_search(scientificName = "Fallopia japonica", country = "IE")
+
+knots_data <- knotweed$data %>% 
+  select(lon = decimalLongitude, lat = decimalLatitude, date = eventDate) %>% 
+  filter(!is.na(lon) | !is.na(lat) | !is.na(date)) %>% 
+  mutate(date = parse_date_time(date, orders = "%Y-%m-%d%T") %>% 
+           floor_date(unit = "months"))
+
+register_google(key = "AIzaSyB3yzz3y1xrYp1eEV3rnBzKt--RQjXlHDU", account_type = "standard")
+dublin <- get_map(location = "dublin", zoom = 11, maptype = "toner")
+
+# SZ Brain data
+
+url <- "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5918692/bin/NIHMS958804-supplement-Supplementary_Table.xlsx"
+zbuffer <- GET(url, write_disk(temp_file <- tempfile(fileext = ".xlsx"))) # downloads the .xlsx file
+# reads into a dataframe. First six rows of the excel file are just header
+# also deletes xMHC locus, hence skip = 7 rahter than skip = 6
+df_sz <- read_excel(temp_file, sheet = 5, skip = 7) 
+
+unlink(temp_file)     # deletes the temporary file
+
+##################################################################
+# makes sz_genes, a dataframe with a single column of the CLOZUK genes
+#######################################################################
+
+all_sz_genes <- df_sz$`Gene(s) tagged` %>% 
+  str_split(",")
+genes_per_SNP <- lengths(all_sz_genes)
+probs <- -log10(df_sz$`P-value`)
+lens <- map2(.x = probs, .y = genes_per_SNP, rep.int) %>% unlist()
+chrom <- map2(.x = df_sz$Chromosome, .y = genes_per_SNP, rep.int) %>% unlist()
+
+all_sz_genes <- all_sz_genes %>% 
+  unlist() %>% 
+  as.data.frame()
+names(all_sz_genes) <- "genes"
+
+all_sz_genes <- cbind(all_sz_genes, chrom, lens) %>% 
+  mutate(angle = 10*sample(c(0:9), n(), replace = T))
+
+```
+
+---
+
+```{r tidytuesday_rollercoaster, echo = F, warning = F, message=F, cache=T, fig.width=9, fig.height=8, fig.align='center'}
+
+#plotting!
+df%>%
+  ggplot(aes(x,y))+ #x is age, y is density
+  geom_linerange(data = df2, aes(x =x, ymin = 0, ymax = y), 
+                 color = 'grey40', alpha = 0.6) + #the gridlines
+  geom_line(color = "#e44fb7", size = 1.5)+
+  #Now adding the wagons:
+  annotation_custom(g1, xmin=5.5, xmax=13, ymin=0.025, ymax=0.030) +
+  annotation_custom(g2, xmin=32, xmax=38, ymin=0.013, ymax=0.019) +
+  annotation_custom(g3, xmin=75, xmax=83, ymin=-0.0015, ymax=0.004) +
+  #The two annotations: one curve and one text for each
+  geom_curve(x = 13, y = 0.028, xend = 18, yend = 0.029, color = "#ec99d3",
+             curvature = -0.2,  arrow = arrow(length = unit(0.1, "inches"))) +
+  scale_x_continuous(breaks = seq(0, 70, by = 10))+
+  scale_y_continuous(limits = c(0, 0.03))+
+  theme_minimal() +
+  theme(
+    plot.background = element_rect(fill = "black"),
+    panel.grid = element_blank(),
+    plot.margin = unit(c(1.2, 0.5, 0.5, 0.5), "cm"),
+    #adds some space around
+    text = element_text(
+      color = "white",
+      size = 10,
+      family = "Ink Free",
+      face = "bold"
+    ),
+    axis.text = element_text(color = "white"),
+    axis.title.y = element_text(angle = 0),
+    plot.caption = element_text(
+      color = "#ec99d3",
+      size = 9,
+      family = "Arial"
+    ),
+    plot.title = element_text(
+      face = "bold",
+      hjust = 0.5,
+      color = "white",
+      size = 16,
+      vjust = 6,
+      family = "Ink Free"
+    ),
+    #vjust to move it towards margins
+    panel.spacing = unit(2, "lines")
+  ) +
+  labs(
+    title = "Age distribution of Amusement Park injuries in Texas",
+    y = "Density",
+    x = "Age of injured person",
+    caption = "#tidytuesday by @ariamsita, data: data.world"
+  ) +
+  annotate(
+    "text",
+    x = 23.5,
+    y = 0.029,
+    label = "There is a peak in \ninjuries among \nchildren aged around 10",
+    color = "white",
+    size = 2.7
+  ) +
+  geom_curve(
+    x = 37,
+    y = 0.017,
+    xend = 43,
+    yend = 0.019,
+    color = "#ec99d3",
+    curvature = -0.2,
+    arrow = arrow(length = unit(0.1, "inches"))
+  ) +
+  annotate(
+    "text",
+    x = 51,
+    y = 0.019,
+    label = "From age 35 onwards, \ninjuries sharply decrease \n(probably attendance to \namusement parks too!)",
+    color = "white",
+    size = 2.7
+  )
+
+```
+
+---
+
+```{r autism_plot, message=F, warning=F, echo=F, fig.width=9, fig.align='center', fig.height=9, cache=T}
+distance <- get_dist(autism_allen_wide, method = "euclidean", stand = F)
+fviz_dist(distance, 
+          gradient = list(low="#00AFBB", mid = "white", high = "#FC4E07"), 
+          lab_size = 6)
+```
+
+
+---
+
+```{r tb_plot, message=F, warning=F, echo=F, fig.width=8, fig.align='center', fig.height=8, cache=T}
+p <- ggplot(data = africa_df, # the input data
+            aes(x = long, y = lat, fill = e_mort_100k, group = group)) + # define variables
+  geom_polygon() + # plot the countries
+  geom_path(colour = "black", lwd = 0.05) + # borough borders
+  coord_equal() + 
+  scale_fill_gradient(name = "TB Incidence", low = "cadetblue1", high = "navyblue") + 
+  transition_states(year, transition_length = 1, state_length = 30) +
+  labs(title =  "Incidence of Tuberculosis in Africa, 2011-2015",
+       subtitle = "Data from WHO via getTBinR",
+       caption =  "Year: {closest_state}") + 
+  theme(axis.text = element_blank(), # change the theme options
+        axis.title = element_blank(), # remove axis titles
+        axis.ticks = element_blank(),
+        plot.title = element_text(hjust = 0.5, size = 18, colour = "firebrick4", face = "bold"),
+        plot.caption =  element_text(hjust = 0, size = 20, colour = "firebrick4"),
+        panel.background = element_blank()) # remove axis ticks
+
+animate(p, nframes = 10, fps = 2)
+```
+
+---
+
+```{r knotweed, message=F, warning=F, echo=F, fig.width=8, fig.align='center', fig.height=8, cache=F}
+knots_data$image <- "/home/eugene/Desktop/Academic/SciencePG/DataVis/lectures/2020/images/knotweed_white.png"
+ggmap(dublin) + 
+  geom_image(data = knots_data, aes(lon, lat, image = image), size = 0.15) + 
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(family = "Ink Free", size = 26, hjust = 0.5)) +
+  ggtitle("Reports of Japanese Knotweed in Dublin") +
+  labs(caption = "Knotweed reports  @eugene100hickey, data: GBIF")
+```
+
+---
+
+```{r sz_brain, message=F, warning=F, echo=F, fig.width=9, fig.align='center', fig.height=9, cache=T}
+setwd("/home/eugene/Desktop/Academic/Research/R_Fun/tidytuesday/christmas-songs")
+
+all_sz_genes %>% 
+  ggplot(aes(label = as.factor(genes), 
+             size = lens*200, 
+             colour = chrom,
+             angle = angle)) +
+  geom_text_wordcloud_area(mask = png::readPNG("brain1.png"), rm_outside = T) +
+  scale_size_area(max_size = 10) +
+  theme_minimal() +
+  labs(caption = "SZ genes by @eugene100hickey, data: PGC")
+```
+
+---
+
+```{r tweets, message=F, warning=F, echo=F, fig.width=7, fig.align='center', fig.height=7, cache=T}
+
+date <- Sys.Date()
+date <- paste0(wday(date, label = T, abbr = F), " ", month(date, label = T, abbr = F), " ", day(date), " ",year(date))
+search_term <- "coronavirus"
+
+# downloads tweets
+token <- get_token()
+greens <- search_tweets(q= search_term, n=10000, 
+                       geocode = "53.33,-6.25,500mi",
+                       token = token)
+
+# sees which lones have emojis
+green_emojis <- greens %>%
+  mutate(emoji = emo::ji_extract_all(text)) %>%
+  unnest(cols = c(emoji)) %>%
+  count(emoji, sort = TRUE)
+
+# function to download emoji image
+emoji_to_link <- function(x) {
+  paste0("https://emojipedia.org/emoji/",x) %>%
+    read_html() %>%
+    html_nodes("tr td a") %>%
+    .[1] %>%
+    html_attr("href") %>%
+    paste0("https://emojipedia.org/", .) %>%
+    read_html() %>%
+    html_node('div[class="vendor-image"] img') %>%
+    html_attr("src")
+}
+
+# makes html/image label
+link_to_img <- function(x, size = 20) {
+  paste0("<img src='", x, "' width='", size, "'/>")
+}
+
+# makes df of top ten, with url's and labels
+top_green <- green_emojis %>%
+  slice(1:10) %>%
+  mutate(url = map_chr(emoji, slowly(~emoji_to_link(.x), rate_delay(1))),
+         label = link_to_img(url))
+
+
+offset <- max(top_green$n) / 20
+
+
+top_green %>%
+  ggplot(aes(fct_reorder(emoji, n, .desc = F), n, label = label)) +
+  geom_col(fill = "darkolivegreen") +
+  geom_richtext(aes(y = n + offset), fill = NA, label.color = NA,
+                label.padding = grid::unit(rep(0, 4), "pt")
+  ) +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x = element_blank()) +
+  labs(x = NULL, y = "Number of Tweets") +
+  ggtitle(paste0("Emojis in Tweets Featuring\n\"", search_term, "\" from\n", date)) +
+  theme_minimal() +
+  theme(title = element_text(family = "Ink Free", face = "bold", size = 28),
+        plot.title = element_text(hjust = 0.8, vjust = 1),
+        axis.text.y = element_blank(),
+        axis.title.y = element_text(size = 36), # size of emoji icons
+        axis.text.x = element_text(size = 24), # numbers on bottom axis
+        panel.grid = element_blank(),
+        axis.ticks.x = element_blank()) +
+  coord_flip()
+```
+

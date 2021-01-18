@@ -391,6 +391,12 @@ scales::show_col(colors$col_hex, ncol = 6)
 
 ---
 
+```{r code-quiz, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/02-colour-codes/", ratio = "16:9")
+```
+
+---
+
 # Colours in _ggplot()_
 
 - use for _fill_ and for _col_ aesthetics
@@ -508,4 +514,8 @@ snails %>% #BREAK
              scales = "free")  #BREAK
 ```
 
+---
+```{r plot-quiz, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/03-colours-plot/", ratio = "16:9")
+```
 

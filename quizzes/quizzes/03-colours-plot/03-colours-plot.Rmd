@@ -1,0 +1,109 @@
+---
+title: "Colour Plots"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE, message=F, warning=F)
+library(tidyverse)
+library(palmerpenguins)
+library(datasets)
+library(gapminder)
+library(scales)
+```
+
+
+## Penguin Plot
+
+Produce a ggplot from the penguins dataset from the *palmerpenguins* package. Place *bill_length_mm* on the x-axis, *bill_depth_mm* on the y, and the points are coloured by *species*. Choose the colours using *scale_color_manual()*. Pick nice colours using the chart from Stowers (or from coolor.co). Something Antarcticky would be appropriate.
+
+```{r penguins, exercise=TRUE, exercise.eval = TRUE}
+
+```
+
+
+```{r penguins-hint}
+palmerpenguins::penguins %>% 
+  ggplot(aes(bill_length_mm, bill_depth_mm, colour = species)) + 
+  geom_point() + 
+  scale_colour_manual(values = c("#BBBBEE", "#225588", "#050511")) +
+  theme_minimal()
+```
+
+
+## USArrests Plot
+
+Produce a ggplot from the USArrests dataset from the *datasets* package. Place *Assault* on the x-axis, *Murder* on the y, and the points are coloured by *UrbanPop*. Choose a divergeing colour scale using *scale_color_gradient2()*. Pick contrasting end points using *scale_color_gradient2(low = "some-colour", high = "some-different-colour", mid = 66)*. Note the *mid = 66* sets the midpoint of *UrbanPop*, this is the median % for the 50 states.
+
+```{r arrests, exercise=TRUE, exercise.eval = TRUE}
+
+```
+
+
+```{r arrests-hint}
+USArrests %>% 
+  ggplot(aes(Assault, Murder, col = UrbanPop)) + 
+  geom_point() + 
+  scale_colour_gradient2(low = "darkolivegreen", midpoint = 66, high = "orchid") +
+  theme_minimal()
+```
+
+## Penguin Facets
+
+Draw three side by side histograms of *body_mass_g* from the *penguins* dataset, faceting by *island*.
+
+```{r penguin-histograms, exercise=TRUE, exercise.eval = TRUE}
+
+```
+
+```{r penguin-histograms-hint}
+palmerpenguins::penguins %>% 
+  ggplot(aes(body_mass_g)) + 
+  geom_histogram() + 
+  facet_wrap(~island) +
+  theme_minimal()
+```
+
+## Gapminder Facets
+
+Produce the plot below of data from the gapminder dataset. It shows population (called *pop* in the dataset) over years for different countries, faceted by *continent*. The light blue lines are individual countries, the dark blue line is the fitted line for the continent. Hints: use geom_line(aes(group = country), col = "lightblue") for the country lines, geom_smooth(se = F) for the fitted lines, and a facet_grid() with five columns. Include *scale_y_log10(label = scales::comma_format())* to get a nice shape on the y axis.
+
+```{r gapminder-plot, echo = F}
+gapminder::gapminder %>% 
+  ggplot(aes(year, pop)) + 
+  geom_line(aes(group = country), col = "lightblue") + 
+  geom_smooth(se = F) + 
+  facet_wrap(~continent, ncol = 5) + 
+  scale_y_log10(label = scales::comma_format()) + 
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        text = element_text(size = 20, family = "Ink Free"),
+        axis.text.x = element_text(size = 10)) + 
+  scale_x_continuous(breaks = c(1950, 1970, 1990))
+```
+
+
+```{r gapminder, exercise=TRUE, exercise.eval = FALSE}
+gapminder::gapminder %>% 
+  ggplot(aes(year, pop)) + 
+  geom_line(aes(group = country), col = "lightblue") +
+  theme_minimal()
+```
+
+
+```{r gapminder-hint}
+gapminder::gapminder %>% 
+  ggplot(aes(year, pop)) + 
+  geom_line(aes(group = country), col = "lightblue") + 
+  geom_smooth(se = F) + 
+  facet_wrap(~continent, ncol = 5) + 
+  scale_y_log10(label = scales::comma_format()) + 
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        text = element_text(size = 20, family = "Ink Free"),
+        axis.text.x = element_text(size = 10)) + 
+  scale_x_continuous(breaks = c(1950, 1970, 1990))
+```
+

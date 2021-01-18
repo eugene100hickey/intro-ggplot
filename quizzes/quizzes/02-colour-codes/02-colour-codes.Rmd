@@ -1,0 +1,70 @@
+---
+title: "Colour Codes"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(gplots)
+library(viridis)
+library(RColorBrewer)
+library(scales)
+```
+
+```{r samples, echo = F}
+my_colours <- sample(colors(), 6)
+```
+
+## hex codes
+
+Use the *gplot::col2hex()* and *gplot::col2rgb()* functions to find the hex codes and rgb codes for the following colours: `r my_colours`
+
+```{r hexcode1, exercise=TRUE, exercise.lines = 5}
+
+```
+
+```{r hexcode2}
+my_colour1 <- sample(colors(), 4)
+my_colour_hex <- col2hex(my_colour1)
+my_string <- glue::glue("What is the hex code for the colour, {my_colour1[3]}?")
+quiz(
+  question(my_string,
+    answer(my_colour_hex[1]),
+    answer(my_colour_hex[2]),
+    answer(my_colour_hex[3], correct = TRUE),
+    answer(my_colour_hex[4])
+  ),
+  question("What is the rgb code for the colour, cornflowerblue?",
+    answer("(100, 149, 237)", correct = TRUE),
+    answer("(255, 248, 220)"),
+    answer("(153, 50, 204)"),
+    answer("(0, 191, 255)")
+  )
+)
+```
+
+
+## Display Colours, *show_col()*
+
+Display nine colours from the *magma()* palette (from *viridis* package) using *show_col()*
+
+```{r viridis, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r viridis-hint}
+viridis::magma(n=9) %>% scales::show_col()
+```
+
+Type *brewer.pal.info* to get the names and types of the brewer palettes. Pick a diverging palette and display six colours using *scales::show_col()* [hint, use brewer.pal(name = "????"n = 12) where "????" is a palette name (see ?RColorBrewer::brewer.pal)]
+
+```{r brewer, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r brewer-hint}
+RColorBrewer::brewer.pal(name = "RdYlBu", n=9) %>% scales::show_col()
+```
