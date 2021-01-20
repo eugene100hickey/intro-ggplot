@@ -73,6 +73,8 @@ library(patchwork)
 library(dslabs)
 library(ggalt)
 library(ggthemes)
+library(thematic)
+library(showtext)
 # set default options
 opts_chunk$set(echo=FALSE,
                collapse = TRUE,
@@ -182,7 +184,7 @@ knitr::include_graphics("img/youll-always-be-mine.jpg")
 .pull-left[
 
 ```{r font_add_google, echo = T, message = FALSE, warning = FALSE, eval=FALSE}
-theme_update(text = element_text(size = 80))
+theme_update(text = element_text(size = 32))
 library(showtext)
 font_add_google(name = "Covered By Your Grace", 
                 family = "grace")
@@ -193,7 +195,7 @@ msleep %>% ggplot(aes(x = bodywt,
   geom_point(show.legend = F) + 
   scale_x_log10(labels = scales::label_comma()) + 
   scale_y_log10(labels = scales::label_comma()) + 
-  labs(title = "Bigger Animals have Bigger Brains") +
+  labs(title = "Bigger Animals-Bigger Brains") +
   theme(text = element_text(family = "grace"))
 ```
 ]
@@ -228,6 +230,7 @@ msleep %>% ggplot(aes(x = bodywt,
     - run *ttf_import()* with path = folder from above
     - run *View(fonttable())* to check available fonts
     - usually need to restart R (*Session* then *Restart R*)
+- alternative is to use [thematic](remotes::install_github("rstudio/thematic")), see below
     
 ---
 
@@ -243,7 +246,6 @@ msleep %>% ggplot(aes(x = bodywt,
 `r chunk_reveal("my_rotate1", break_type = "rotate", widths = c(50,50))`
 
 ```{r my_rotate1, eval = F, echo = F}
-theme_update(text = element_text(size = 80))
 palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) +
   geom_point() +
   theme_classic() + #ROTATE
@@ -269,9 +271,37 @@ palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = is
     - *ggtech* themes from companies, e.g. Facebook. See [here](https://github.com/ricardo-bion/ggtech)
 - [This website](https://rfortherestofus.com/2019/08/themes-to-improve-your-ggplot-figures/) is pretty good on themes
 - again, make sure you experiment with these
+- have to mention [thematic](remotes::install_github("rstudio/thematic")) here, simplifies adding google fonts too.
 
 ---
 
+## thematic example
+
+.pull-left[
+
+```{r thematic-example, echo=TRUE, eval=FALSE}
+thematic_on(bg = "#111111", fg = "white", accent = "#0CE3AC", font = "Permanent Marker")
+
+gapminder::gapminder %>% 
+  dplyr::filter(year == "2007", continent == "Europe") %>% 
+  ggplot(aes(lifeExp, gdpPercap, label = country, colour = pop)) +
+  geom_point(show.legend = FALSE) + 
+  ggrepel::geom_text_repel(show.legend = FALSE)
+
+{{thematic_off()}}
+```
+
+]
+
+.pull-right[
+
+```{r thematic-example-out, ref.label="thematic-example", echo=FALSE, fig.height=6}
+```
+
+]
+
+
+---
 
 
 ## Fine Control Over Themes
@@ -304,8 +334,13 @@ palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = is
 .pull-left[
 
 ```{r themes3, echo=T, eval=F}
+font_add("Cabin Sketch", 
+         regular = "fonts/CabinSketch-Regular.ttf")
+showtext_auto()
+
 palmerpenguins::penguins %>% ggplot(aes(body_mass_g, flipper_length_mm, col = island)) + 
   geom_point() +
+  labs(x = "Body mass(g)", y = "Flipper Length (mm)") +
   theme(text = element_text(family = "Cabin Sketch", 
                             size = 24, 
                             face = "bold"))
@@ -332,6 +367,7 @@ palmerpenguins::penguins %>%
              flipper_length_mm, 
              col = island)) +
   geom_point() +
+  labs(x = "Body mass(g)", y = "Flipper Length (mm)") +
   theme(legend.position = "bottom", 
         axis.text.y = element_blank())
 ```
@@ -356,8 +392,12 @@ palmerpenguins::penguins %>%
 .pull-left[
 
 ```{r themes5, echo=T, eval=F, message=F, warning=F}
+font_add("Fiendish", 
+         "fonts/Fiendish.ttf")
+showtext_auto()
+
 theme_update(text = element_text(family = "Fiendish",
-                                 size = 24,
+                                 size = 18,
                                  colour = "#691740", 
                                  face = "bold"))
 
@@ -381,6 +421,10 @@ palmerpenguins::penguins %>%
 .pull-left[
 
 ```{r teeth, message=F, warning=F, echo=T, eval=F}
+font_add("Get Schwifty", 
+         regular = "fonts/get_schwifty.ttf")
+showtext_auto()
+
 theme_bluewhite <- function (base_size = 11, 
                              base_family = "Get Schwifty") 
   {
@@ -398,7 +442,9 @@ theme_bluewhite <- function (base_size = 11,
 # Using our new theme
 ggplot(ToothGrowth, aes(factor(dose), len)) + 
   geom_boxplot() +
-  theme_bluewhite(base_size = 24)
+  theme_bluewhite(base_size = 24) +
+  labs(x = "Supplement Dose (mg/day)",
+       y = "Tooth Length (mm)")
 ```
 
 ]
@@ -428,6 +474,7 @@ class: center, inverse
 
 
 ```{r gapminder_plot, echo=T, eval=F, include=F}
+theme_update(legend.position = "none")
 gapminder::gapminder %>%
   filter(continent == "Americas") %>% #BREAK
   ggplot(aes(gdpPercap, pop)) + 
@@ -442,3 +489,5 @@ gapminder::gapminder %>%
 ```
 
 `r chunk_reveal("gapminder_plot", break_type = "user")`
+
+
