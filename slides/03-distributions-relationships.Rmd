@@ -303,6 +303,12 @@ class: inverse
     
 ---
 
+```{r histogram-quiz, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/histograms/", ratio = "16:9")
+```
+
+---
+
 class: inverse
 
 # Visualising Relationships

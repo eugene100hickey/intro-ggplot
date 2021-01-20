@@ -118,7 +118,7 @@ list_of_packages <- c("tidyverse", "ggthemes", "carData",
                       "scales", "showtext", "wesanderson", 
                       "RColorBrewer", "viridis", "dslabs",
                       "gplots", "palmerpenguins",
-                      "gapminder", "datasets")
+                      "gapminder", "datasets", "HistData")
 
 # run the following line of code to install the packages you currently do not have
 new_pkgs <- list_of_pkgs[!(list_of_pkgs %in% installed.packages()[,"Package"])]

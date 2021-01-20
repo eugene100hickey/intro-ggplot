@@ -1,0 +1,96 @@
+---
+title: "Distributions"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, fig.width = 5)
+```
+
+
+## Histograms
+
+
+Make a histogram of the county areas (variable, *area*) from the midwest dataset from ggplot2.
+
+```{r county, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r county-hint}
+midwest %>% 
+  ggplot(aes(area)) + 
+  geom_histogram()
+```
+
+## Density Plot
+
+Make a density plot of the county areas (variable, *area*) from the midwest dataset from ggplot2.
+
+```{r}
+theme_set(theme(legend.position = "bottom"))
+```
+
+
+```{r density, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r density-hint}
+midwest %>% 
+  ggplot(aes(area)) + 
+  stat_density(geom = "line", position = "identity")
+```
+
+## Density by State
+
+Make a density plot of the county areas from the midwest dataset from ggplot2 which has five different lines for each of the five states, (variable, *state*)
+
+```{r density5, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r density5-hint}
+midwest %>% 
+  ggplot(aes(area, col = state)) + 
+  stat_density(geom = "line", position = "identity")
+```
+
+## Another Histogram
+
+See if you can reproduce the plot using the *midwest* dataset show below. Hint, *scale_x_log10()* will be useful
+
+```{r}
+midwest %>% 
+  ggplot(aes(poptotal)) + 
+  geom_histogram() + 
+  scale_x_log10(labels = scales::comma_format())
+```
+
+
+```{r filter, exercise=TRUE}
+
+```
+
+```{r filter-hint-1}
+midwest %>% 
+  ggplot(aes(poptotal)) + 
+  geom_histogram()
+```
+
+```{r filter-hint-2}
+midwest %>% 
+  ggplot(aes(poptotal)) + 
+  geom_histogram() + 
+  scale_x_log10()
+```
+
+```{r filter-hint-3}
+midwest %>% 
+  ggplot(aes(poptotal)) + 
+  geom_histogram() + 
+  scale_x_log10(labels = scales::comma_format())
+```

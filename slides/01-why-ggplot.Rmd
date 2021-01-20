@@ -295,8 +295,11 @@ for (gene in unique(top_data$combined)) {
 .pull-left[
 ```{r ggplot-label, eval=FALSE, echo = TRUE, fig.height=4, cache = F}
 ggplot(top_data, aes(rate, expression, color = nutrient)) +
-  geom_point(show.legend = FALSE) +
-  geom_smooth(method = "lm", se = FALSE, show.legend = FALSE) +
+  geom_point(show.legend = FALSE, ) +
+  geom_smooth(method = "lm", 
+              se = FALSE, 
+              show.legend = FALSE,
+              size = 0.5) +
   facet_wrap(~combined, 
              scales = "free_y", 
              nrow = 3)
