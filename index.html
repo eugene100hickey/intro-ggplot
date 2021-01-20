@@ -92,8 +92,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <link rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"/>
 
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2021-01-17"/>
-  <meta property="article:created" itemprop="dateCreated" content="2021-01-17"/>
+  <meta property="article:published" itemprop="datePublished" content="2021-01-20"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-01-20"/>
   <meta name="article:author" content="Eugene Hickey"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
@@ -112,7 +112,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","author","date","description","site"]}},"value":[{"type":"character","attributes":{},"value":["Introduction to ggplot"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Eugene Hickey"]},{"type":"character","attributes":{},"value":["https://biosience.netlify.app"]},{"type":"character","attributes":{},"value":["Technological University Dublin"]},{"type":"character","attributes":{},"value":["https://www.tudublin.ie"]}]}]},{"type":"character","attributes":{},"value":["2021-01-17"]},{"type":"character","attributes":{},"value":["An Introduction to ggplot for NHSr\n"]},{"type":"character","attributes":{},"value":["distill::distill_website"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","author","date","description","site"]}},"value":[{"type":"character","attributes":{},"value":["Introduction to ggplot"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url","affiliation","affiliation_url"]}},"value":[{"type":"character","attributes":{},"value":["Eugene Hickey"]},{"type":"character","attributes":{},"value":["https://biosience.netlify.app"]},{"type":"character","attributes":{},"value":["Technological University Dublin"]},{"type":"character","attributes":{},"value":["https://www.tudublin.ie"]}]}]},{"type":"character","attributes":{},"value":["2021-01-20"]},{"type":"character","attributes":{},"value":["An Introduction to ggplot for NHSr\n"]},{"type":"character","attributes":{},"value":["distill::distill_website"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2393,7 +2393,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.6.6/header-attrs.js"></script>
+  <script src="site_libs/clipboard-2.0.6/clipboard.min.js"></script>
+  <link href="site_libs/xaringanExtra-clipboard-0.2.4/xaringanExtra-clipboard.css" rel="stylesheet" />
+  <script src="site_libs/xaringanExtra-clipboard-0.2.4/xaringanExtra-clipboard.js"></script>
+  <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
   <meta name="description" content="An Introduction to ggplot for NHSr"/>
   <meta name="generator" content="xaringan and remark.js"/>
   <meta name="github-repo" content="eugene100hickey/NHSr-ggplot"/>
@@ -2433,7 +2437,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Introduction to ggplot","description":"An Introduction to ggplot for NHSr","authors":[{"author":"Eugene Hickey","authorURL":"https://biosience.netlify.app","affiliation":"Technological University Dublin","affiliationURL":"https://www.tudublin.ie","orcidID":""}],"publishedDate":"2021-01-17T00:00:00.000+00:00","citationText":"Hickey, 2021"}
+{"title":"Introduction to ggplot","description":"An Introduction to ggplot for NHSr","authors":[{"author":"Eugene Hickey","authorURL":"https://biosience.netlify.app","affiliation":"Technological University Dublin","affiliationURL":"https://www.tudublin.ie","orcidID":""}],"publishedDate":"2021-01-20T00:00:00.000+00:00","citationText":"Hickey, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2486,7 +2490,7 @@ Slides
 <div class="d-byline">
   Eugene Hickey <a href="https://biosience.netlify.app" class="uri">https://biosience.netlify.app</a> (Technological University Dublin)<a href="https://www.tudublin.ie" class="uri">https://www.tudublin.ie</a>
   
-<br/>2021-01-17
+<br/>2021-01-20
 </div>
 
 <div class="d-article">
@@ -2572,7 +2576,11 @@ Thursday, January 21st<br/>1-4pm BST (<a href="https://www.worldtimebuddy.com/?q
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='co'># From CRAN</span>
-<span class='va'>list_of_packages</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"tidyverse"</span><span class='op'>)</span>
+<span class='va'>list_of_packages</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"tidyverse"</span>, <span class='st'>"ggthemes"</span>, <span class='st'>"carData"</span>, 
+                      <span class='st'>"scales"</span>, <span class='st'>"showtext"</span>, <span class='st'>"wesanderson"</span>, 
+                      <span class='st'>"RColorBrewer"</span>, <span class='st'>"viridis"</span>, <span class='st'>"dslabs"</span>,
+                      <span class='st'>"gplots"</span>, <span class='st'>"palmerpenguins"</span>,
+                      <span class='st'>"gapminder"</span>, <span class='st'>"datasets"</span><span class='op'>)</span>
 
 <span class='co'># run the following line of code to install the packages you currently do not have</span>
 <span class='va'>new_pkgs</span> <span class='op'>&lt;-</span> <span class='va'>list_of_pkgs</span><span class='op'>[</span><span class='op'>!</span><span class='op'>(</span><span class='va'>list_of_pkgs</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/utils/installed.packages.html'>installed.packages</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>[</span>,<span class='st'>"Package"</span><span class='op'>]</span><span class='op'>)</span><span class='op'>]</span>

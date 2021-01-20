@@ -1,0 +1,99 @@
+---
+title: "Themes"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(ggthemes)
+library(datasets)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Theme Elements
+
+### panel.background 
+
+Use *theme_get()* to find the default theme for ggplot. Now look for the *panel.background*, then *fill*, then *colour*. 
+
+```{r panel-background, exercise=TRUE}
+
+```
+
+```{r panel-background-hint, warning=F, message = F, fig.width=5}
+theme_get()$panel.background$fill
+```
+
+### Change theme
+
+Now use *theme_set()* to change the theme to *theme_solarized()* from the *ggthemes* package. Find the new value for the background fill colour.
+
+
+```{r solarized-background, exercise=TRUE}
+
+```
+
+```{r solarized-background-hint-1, warning=F, message = F, fig.width=5}
+library(ggthemes)
+theme_set(theme_solarized())
+```
+
+
+```{r solarized-background-hint-2, warning=F, message = F, fig.width=5}
+library(ggthemes)
+theme_set(theme_solarized())
+theme_get()$panel.background$fill
+```
+
+## Geyser Plots
+
+### Theme Change
+
+Using the *faithful* dataset from *datasets*, make a plot of *eruptions* versus *waiting* using *theme_solarized()* from the ggthemes package
+
+
+```{r faithful1, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r faithful1-hint}
+faithful %>% 
+  ggplot(aes(waiting, eruptions)) + 
+  geom_point() + 
+  theme_solarized()
+```
+
+### Text Size Change
+
+Now, take the plot above and change the text size to *size = 20*
+
+```{r faithful2, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r faithful2-hint}
+faithful %>% 
+  ggplot(aes(waiting, eruptions)) + 
+  geom_point() + 
+  theme_solarized() +
+  theme(text = element_text(size = 20))
+```
+
+### Now take the plot above and remove the ticks from the x and y axes
+
+```{r faithful3, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r faithful3-hint}
+faithful %>% 
+  ggplot(aes(waiting, eruptions)) + 
+  geom_point() + 
+  theme_solarized() +
+  theme(text = element_text(size = 20),
+        axis.ticks = element_blank())
+```

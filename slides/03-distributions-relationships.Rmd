@@ -352,3 +352,10 @@ scatter <- Galton %>%
 jittered <- Galton %>% ggplot(aes(parent, child)) + geom_jitter(width = 0.4, height = 0.4)
 scatter + plot_spacer() + jittered 
 ```
+
+
+---
+
+```{r lunchtime-challenge, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/lunchtime-challenge/", ratio = "16:9")
+```

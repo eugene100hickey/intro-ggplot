@@ -20,6 +20,8 @@ knitr::opts_chunk$set(echo = FALSE)
 # Learn more about publishing to GitHub Pages at:
 # https://rstudio.github.io/distill/publish_website.html#github-pages
 
+xaringanExtra::use_clipboard()
+
 ```
 
 ```{r meta, echo=FALSE}
@@ -112,7 +114,11 @@ You can find step-by-step instructions for installing these here: [macOS](https:
 
 ```{r, eval=FALSE, echo=TRUE}
 # From CRAN
-list_of_packages <- c("tidyverse")
+list_of_packages <- c("tidyverse", "ggthemes", "carData", 
+                      "scales", "showtext", "wesanderson", 
+                      "RColorBrewer", "viridis", "dslabs",
+                      "gplots", "palmerpenguins",
+                      "gapminder", "datasets")
 
 # run the following line of code to install the packages you currently do not have
 new_pkgs <- list_of_pkgs[!(list_of_pkgs %in% installed.packages()[,"Package"])]

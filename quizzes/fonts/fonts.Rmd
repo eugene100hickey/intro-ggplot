@@ -1,0 +1,58 @@
+---
+title: "Fonts"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(extrafont)
+library(showtext)
+library(HistData)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Google Fonts
+
+### Categories 
+
+*Fonts are categorised based on their style: Serif, Sans Serif, Handwriting, Display, and Monospace.*
+
+```{r google-fonts}
+quiz(
+  question("Go to fonts.google.com, which of the following are Display fonts?",
+    answer("Bubblegum Sans", correct = TRUE),
+    answer("Raleway"),
+    answer("Rye", correct = TRUE),
+    answer("Love Ya Like A Sister", correct = TRUE)
+  )
+)
+```
+
+
+## Using Fonts
+
+Use *font_add_google()* from the *showtext* package to add the *Caveat* font. Make it available with *showtext_auto()*. Use this font then to change the text style in the plot below (you'll need to add the line, *theme(text = element_text(family = "Caveat"))*) to the end of the code.
+
+```{r cholera, exercise=TRUE, exercise.lines = 5, warning=F, message = F, fig.width=5}
+Cholera %>% ggplot(aes(popn, cholera_deaths, colour = water)) +
+  geom_point() +
+  labs(x = "Population",
+       y = "No of Cholera Deaths in 1849")
+```
+
+
+```{r cholera-hint, warning=F, message = F, fig.width=5}
+library(showtext)
+font_add_google(name = "Caveat", family = "Caveat")
+showtext_auto()
+
+Cholera %>% ggplot(aes(popn, cholera_deaths, colour = water)) +
+  geom_point() +
+  labs(x = "Population",
+       y = "No of Cholera Deaths in 1849") +
+  theme(text = element_text(family = "Caveat",
+                            size = 32))
+```

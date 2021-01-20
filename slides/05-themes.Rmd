@@ -188,7 +188,7 @@ theme_update(text = element_text(size = 32))
 library(showtext)
 font_add_google(name = "Covered By Your Grace", 
                 family = "grace")
-showtext_auto()
+{{showtext_auto()}}
 msleep %>% ggplot(aes(x = bodywt, 
                       y = brainwt, 
                       colour = order)) + 
@@ -196,7 +196,7 @@ msleep %>% ggplot(aes(x = bodywt,
   scale_x_log10(labels = scales::label_comma()) + 
   scale_y_log10(labels = scales::label_comma()) + 
   labs(title = "Bigger Animals-Bigger Brains") +
-  theme(text = element_text(family = "grace"))
+  {{theme(text = element_text(family = "grace"))}}
 ```
 ]
 
@@ -231,7 +231,14 @@ msleep %>% ggplot(aes(x = bodywt,
     - run *View(fonttable())* to check available fonts
     - usually need to restart R (*Session* then *Restart R*)
 - alternative is to use [thematic](remotes::install_github("rstudio/thematic")), see below
-    
+
+
+---
+
+```{r font-quiz, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/fonts/", ratio = "16:9")
+```
+
 ---
 
 ## Complete Themes
@@ -489,5 +496,18 @@ gapminder::gapminder %>%
 ```
 
 `r chunk_reveal("gapminder_plot", break_type = "user")`
+
+---
+
+
+```{r theme-quiz, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/Themes/", ratio = "16:9")
+```
+
+---
+
+```{r homework, echo=FALSE}
+xaringanExtra::embed_xaringan(url = "https://eugene-hickey.shinyapps.io/homework/", ratio = "16:9")
+```
 
 
