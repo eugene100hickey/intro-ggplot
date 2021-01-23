@@ -1,0 +1,14 @@
+name: 02-colour-codes
+title:
+username:
+account: eugene-hickey
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3484658
+bundleId: 4131651
+url: https://eugene-hickey.shinyapps.io/02-colour-codes/
+when: 1611360201.29966
+asMultiple: FALSE
+asStatic: FALSE
+additionalFiles: 02-colour-codes.html
+ignoredFiles: _site.yml|index.html|index.Rmd|README.md|search.json|test-index.html|test-index.Rmd|theme.css|Themes/Themes.html|Themes/Themes.Rmd|quizzes|site_libs|slides

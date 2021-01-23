@@ -20,7 +20,7 @@ my_colours <- sample(colors(), 6)
 
 ## hex codes
 
-Use the *gplot::col2hex()* and *gplot::col2rgb()* functions to find the hex codes and rgb codes for the following colours: `r my_colours`
+Use the *gplots::col2hex()* and *col2rgb()* functions to find the hex codes and rgb codes for the following colours: `r my_colours`
 
 ```{r hexcode1, exercise=TRUE, exercise.lines = 5}
 
